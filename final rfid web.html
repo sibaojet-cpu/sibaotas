@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>SIBAO TAS · RFID</title>
+  <link rel="icon" type="image/png" href="https://res.cloudinary.com/t3tg9lfb/image/upload/v1783515403/1000374024_11zon-256x256_ivfvnp.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  <style>
+    /* ========== LOGIN PAGE STYLES ========== */
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    :root {
+      --bg:#f0f2f5; --card:#ffffff; --border:#e4e7ec; --text:#1a1a2e;
+      --text-secondary:#4a4a6a; --text-muted:#8a8aa0; --green:#2e7d32;
+      --green-light:#e8f5e9; --green-dark:#1b5e20; --success:#4caf50;
+      --warning:#ff9800; --danger:#f44336; --radius:14px; --shadow:0 2px 12px rgba(0,0,0,0.06);
+      font-size: 16px;
+    }
+    
+    .login-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #f0f2f5 0%, #e8ecf1 100%);
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    .login-wrapper { width:100%; max-width:440px; margin:0 auto; }
+    .login-card {
+      background: #ffffff;
+      border-radius: 32px;
+      padding: 36px 30px 32px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.08), 0 6px 20px rgba(0,0,0,0.02);
+      border: 1px solid rgba(255,255,255,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(46,125,50,0.03) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .login-header { text-align:center; margin-bottom:28px; position:relative; z-index:1; }
+    .brand-icon {
+      width: 80px; height: 80px;
+      border-radius: 24px;
+      background: #e8f5e9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+      box-shadow: 0 8px 18px rgba(46,125,50,0.08);
+    }
+    .brand-icon img { width:56px; height:56px; object-fit:contain; }
+    .login-header h2 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a1a2e;
+      letter-spacing: -0.3px;
+    }
+    .login-header h2 span { color: #2e7d32; }
+    .login-header p {
+      color: #6b6b8a;
+      font-size: 15px;
+      margin-top: 4px;
+      font-weight: 400;
+    }
+    .input-group { margin-bottom:18px; position:relative; z-index:1; }
+    .input-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #2d2d44;
+      margin-bottom: 5px;
+      letter-spacing: 0.2px;
+    }
+    .input-group label i { margin-right:6px; color:#2e7d32; }
+    .input-group .input-wrap {
+      display: flex;
+      align-items: center;
+      background: #f4f6fa;
+      border-radius: 16px;
+      padding: 0 16px;
+      border: 1.5px solid transparent;
+      transition: 0.2s;
+    }
+    .input-group .input-wrap:focus-within {
+      border-color: #2e7d32;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(46,125,50,0.06);
+    }
+    .input-group .input-wrap i {
+      color: #8a8aa0;
+      font-size: 16px;
+      margin-right: 12px;
+      width: 18px;
+      text-align: center;
+    }
+    .input-group .input-wrap input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      padding: 14px 0;
+      font-size: 15px;
+      color: #1a1a2e;
+      outline: none;
+      font-weight: 500;
+    }
+    .input-group .input-wrap input::placeholder {
+      color: #b0b0c8;
+      font-weight: 400;
+      font-size: 14px;
+    }
+    .btn-login {
+      width: 100%;
+      background: #2e7d32;
+      border: none;
+      padding: 16px;
+      border-radius: 40px;
+      font-size: 17px;
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 8px 24px rgba(46,125,50,0.18);
+      margin-top: 6px;
+      position:relative; z-index:1;
+    }
+    .btn-login:active { transform:scale(0.97); background:#1b5e20; }
+    .btn-login i { font-size:18px; }
+    .login-footer {
+      text-align: center;
+      margin-top: 26px;
+      font-size: 13px;
+      color: #8a8aa0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      border-top: 1px solid #edf0f5;
+      padding-top: 22px;
+      position:relative; z-index:1;
+    }
+    .login-footer .powered {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-weight: 500;
+      color: #4a4a6a;
+      font-size: 14px;
+    }
+    .login-footer .powered i { color:#2e7d32; font-size:15px; }
+    .login-footer .powered strong { font-weight:700; color:#1a1a2e; }
+    .login-footer .sub { font-size:11px; color:#b8b8d0; letter-spacing:0.3px; }
+    .login-alert {
+      background: #ffebee;
+      color: #b71c1c;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      border-left: 4px solid #b71c1c;
+      position:relative; z-index:1;
+    }
+    .login-alert.show { display:flex; }
+    .login-alert i { font-size:18px; }
+    .login-alert.success {
+      background: #e8f5e9;
+      color: #1b5e20;
+      border-left-color: #2e7d32;
+    }
+    @media (max-width:480px) {
+      .login-card { padding:28px 18px 24px; border-radius:26px; }
+      .login-header h2 { font-size:22px; }
+      .brand-icon { width:64px; height:64px; }
+      .brand-icon img { width:44px; height:44px; }
+      .input-group .input-wrap input { padding:12px 0; font-size:15px; }
+    }
+
+    /* ========== MAIN APP STYLES ========== */
+    #mainApp { display:none; }
+    #mainApp.visible { display:block; }
+    
+    html, body { 
+      height:100%; 
+      font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+      background:var(--bg); 
+      color:var(--text); 
+      touch-action:manipulation; 
+      -webkit-text-size-adjust:100%; 
+      overflow-x:hidden; 
+      width:100%; 
+    }
+    
+    .app-container { display:flex; min-height:100vh; width:100%; max-width:100vw; overflow-x:hidden; }
+    
+    .sidebar {
+      width:240px; min-height:100vh; background:var(--card); border-right:1px solid var(--border);
+      padding:20px 16px; flex-shrink:0; 
+      position:fixed; top:0; left:0; bottom:0; height:100vh; overflow-y:auto;
+      box-shadow:2px 0 20px rgba(0,0,0,0.04); transition:transform 0.3s cubic-bezier(0.4,0,0.2,1); z-index:100;
+      display:flex;
+      flex-direction:column;
+    }
+    .sidebar-brand { display:flex; align-items:center; gap:12px; padding-bottom:20px; border-bottom:1px solid var(--border); margin-bottom:20px; flex-shrink:0; }
+    .brand-icon { width:44px; height:44px; border-radius:12px; overflow:hidden; flex-shrink:0; }
+    .brand-icon img { width:100%; height:100%; object-fit:cover; }
+    .brand-text h1 { font-size:18px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
+    .brand-text h1 small { font-size:10px; background:var(--green-light); padding:0 8px; border-radius:20px; color:var(--green); font-weight:500; }
+    .sibao-tagline { display:flex; gap:4px; font-size:8px; text-transform:uppercase; letter-spacing:0.4px; color:var(--text-muted); margin-top:2px; }
+    .brand-text span { font-size:9px; color:var(--text-muted); }
+    .sidebar-nav { display:flex; flex-direction:column; gap:4px; flex:1; }
+    .nav-label { font-size:10px; text-transform:uppercase; letter-spacing:0.6px; color:var(--text-muted); padding:6px 8px 2px; font-weight:600; }
+    .sidebar-nav a { display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:10px; color:var(--text-secondary); text-decoration:none; font-weight:500; font-size:14px; transition:0.2s; cursor:pointer; }
+    .sidebar-nav a i { font-size:17px; width:20px; text-align:center; }
+    .sidebar-nav a:hover { background:var(--green-light); color:var(--text); }
+    .sidebar-nav a.active { background:var(--green-light); color:var(--green); box-shadow:inset 3px 0 0 var(--green); }
+    .sidebar-nav a .badge { margin-left:auto; font-size:10px; font-weight:600; padding:1px 8px; border-radius:20px; background:var(--green-light); color:var(--green); }
+    .sidebar-footer { 
+      margin-top:16px; 
+      padding-top:12px; 
+      border-top:1px solid var(--border); 
+      display:flex; 
+      align-items:center; 
+      gap:8px; 
+      font-size:13px; 
+      color:var(--text-secondary);
+      flex-shrink:0;
+    }
+    .status-dot { width:6px; height:6px; border-radius:50%; background:var(--success); display:inline-block; animation:pulse-dot 2s infinite; }
+    @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.5;transform:scale(0.9);} }
+
+    .main-content { 
+      flex:1; padding:20px 24px 80px; min-height:100vh; width:100%; 
+      overflow-x:hidden; background:var(--bg);
+      margin-left:240px;
+    }
+
+    .topbar { 
+      display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:12px; 
+      padding:8px 0; 
+      position:sticky; top:0; background:var(--bg); z-index:10; 
+    }
+    .topbar-left { display:flex; align-items:center; gap:12px; }
+    .hamburger { display:none; background:var(--card); border:1px solid var(--border); color:var(--text); font-size:20px; padding:6px 10px; border-radius:10px; cursor:pointer; transition:0.2s; touch-action:manipulation; box-shadow:var(--shadow); }
+    .hamburger:active { transform:scale(0.92); }
+    .page-title { font-size:24px; font-weight:700; color:var(--text); }
+    .topbar-right { display:flex; align-items:center; gap:8px; }
+    .date-badge { background:var(--card); padding:6px 14px; border-radius:30px; font-size:13px; color:var(--text-secondary); border:1px solid var(--border); display:flex; align-items:center; gap:6px; box-shadow:var(--shadow); }
+    .date-badge i { font-size:13px; }
+    .btn-icon { background:var(--card); border:1px solid var(--border); color:var(--text-secondary); width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:0.2s; font-size:15px; box-shadow:var(--shadow); }
+    .btn-icon:active { transform:scale(0.92); }
+    .logout-btn { background:var(--danger); color:white; border:none; padding:6px 16px; border-radius:30px; font-weight:600; font-size:13px; cursor:pointer; transition:0.2s; }
+    .logout-btn:active { transform:scale(0.95); }
+
+    .tab-content { display:none !important; animation:fadeUp 0.3s ease; }
+    .tab-content.active { display:block !important; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }
+
+    .home-container { max-width:100%; margin:0 auto; }
+    .home-hero { background:var(--card); border-radius:var(--radius); padding:28px 24px; text-align:center; border:1px solid var(--border); box-shadow:var(--shadow); margin-bottom:16px; position:relative; overflow:hidden; }
+    .home-hero::before { content:''; position:absolute; top:-50%; right:-50%; width:100%; height:100%; background:radial-gradient(circle, rgba(46,125,50,0.05) 0%, transparent 70%); border-radius:50%; }
+    .home-hero > * { position:relative; z-index:1; }
+    .home-logo { width:80px; height:80px; border-radius:50%; margin:0 auto 12px; overflow:hidden; }
+    .home-logo img { width:100%; height:100%; object-fit:cover; }
+    .home-hero h2 { font-size:28px; font-weight:700; color:var(--text); margin-bottom:6px; }
+    .home-hero h2 span { color:var(--green); }
+    .home-hero p { color:var(--text-secondary); font-size:16px; max-width:100%; margin:0 auto 12px; padding:0 4px; line-height:1.4; }
+    .home-actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+
+    .home-features { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:16px; }
+    .feature-card { background:var(--card); border-radius:var(--radius); padding:16px 12px; border:1px solid var(--border); text-align:center; box-shadow:var(--shadow); transition:0.2s; }
+    .feature-card:hover { transform:translateY(-2px); border-color:var(--green); }
+    .feature-card .feature-icon { width:52px; height:52px; border-radius:12px; margin:0 auto 6px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:var(--green-light); }
+    .feature-card .feature-icon img { width:30px; height:30px; object-fit:contain; }
+    .feature-card h4 { font-size:15px; color:var(--text); margin-bottom:2px; font-weight:600; }
+    .feature-card p { font-size:13px; color:var(--text-muted); line-height:1.2; }
+
+    .home-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:16px; }
+    .stat-box { background:var(--card); border-radius:var(--radius); padding:16px; border:1px solid var(--border); text-align:center; box-shadow:var(--shadow); }
+    .stat-box .number { font-size:30px; font-weight:700; color:var(--green); }
+    .stat-box .label { font-size:13px; color:var(--text-muted); font-weight:500; text-transform:uppercase; letter-spacing:0.3px; }
+
+    .home-info { 
+      background:var(--card); 
+      border-radius:var(--radius); 
+      padding:24px; 
+      border:1px solid var(--border); 
+      box-shadow:var(--shadow); 
+      margin-top:16px; 
+    }
+    .about-container {
+      display:flex;
+      gap:24px;
+      align-items:stretch;
+      flex-wrap:wrap;
+    }
+    .about-content {
+      flex:1;
+      min-width:250px;
+    }
+    .about-content .about-title {
+      font-size:18px;
+      font-weight:700;
+      color:var(--text);
+      margin-bottom:16px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .about-content .about-title i {
+      color:var(--green);
+    }
+    .about-grid {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+    }
+    .about-item {
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      padding:14px 16px;
+      background:var(--bg);
+      border-radius:10px;
+      transition:0.2s;
+      border:1px solid transparent;
+    }
+    .about-item:hover {
+      background:var(--card);
+      border-color:var(--green-light);
+      box-shadow:var(--shadow);
+    }
+    .about-item .icon-box {
+      width:40px;
+      height:40px;
+      min-width:40px;
+      border-radius:10px;
+      background:var(--green-light);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--green);
+      font-size:18px;
+      flex-shrink:0;
+    }
+    .about-item .info h4 {
+      font-size:14px;
+      font-weight:600;
+      color:var(--text);
+      margin-bottom:2px;
+    }
+    .about-item .info p {
+      font-size:13px;
+      color:var(--text-muted);
+      line-height:1.3;
+    }
+
+    .search-bar { 
+      background:var(--card); border-radius:var(--radius); padding:14px 18px; margin-bottom:16px; 
+      border:1px solid var(--border); display:flex; flex-direction:column; gap:10px; box-shadow:var(--shadow);
+      position:sticky; top:70px; z-index:9; 
+    }
+    .search-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .search-input-wrap { flex:1; display:flex; align-items:center; gap:10px; background:var(--bg); border-radius:30px; padding:0 16px; border:1px solid var(--border); transition:0.2s; min-width:140px; height:44px; }
+    .search-input-wrap:focus-within { border-color:var(--green); background:var(--card); box-shadow:0 0 0 3px rgba(46,125,50,0.1); }
+    .search-input-wrap i { color:var(--text-muted); font-size:14px; }
+    .search-input-wrap input { background:transparent; border:none; padding:6px 0; color:var(--text); font-size:15px !important; width:100%; outline:none; }
+    .search-input-wrap input::placeholder { color:var(--text-muted); font-size:13px; }
+    .btn-group { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+    .btn { padding:0 16px; height:38px; border:none; border-radius:30px; font-weight:600; font-size:13px; display:inline-flex; align-items:center; gap:5px; cursor:pointer; transition:0.2s; background:var(--bg); color:var(--text-secondary); border:1px solid var(--border); white-space:nowrap; touch-action:manipulation; }
+    .btn:active { transform:scale(0.95); }
+    .btn-primary { background:var(--green); color:white; border:none; box-shadow:0 2px 12px rgba(46,125,50,0.2); }
+    .btn-primary:active { background:var(--green-dark); }
+    .btn-success { background:var(--success); color:white; border:none; }
+    .btn-danger { background:var(--danger); color:white; border:none; }
+    .btn-warning { background:var(--warning); color:white; border:none; }
+    .btn-sm { height:32px; font-size:12px; padding:0 12px; }
+    .btn-xs { height:26px; font-size:10px; padding:0 8px; }
+    .record-count { color:var(--text-muted); font-size:13px; padding:0 4px; font-weight:500; }
+
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:16px; }
+    .stat-card { background:var(--card); border-radius:var(--radius); padding:14px 16px; border:1px solid var(--border); box-shadow:var(--shadow); }
+    .stat-label { font-size:11px; text-transform:uppercase; letter-spacing:0.3px; color:var(--text-muted); font-weight:600; }
+    .stat-value { font-size:24px; font-weight:700; margin-top:2px; color:var(--text); }
+    .stat-value.success { color:var(--success); }
+    .stat-value.danger { color:var(--danger); }
+    .stat-value.warning { color:var(--warning); }
+
+    .table-container { background:var(--card); border-radius:var(--radius); border:1px solid var(--border); overflow:hidden; box-shadow:var(--shadow); width:100%; }
+    .table-header { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:6px; }
+    .table-header h3 { font-size:16px; font-weight:600; display:flex; align-items:center; gap:6px; color:var(--text); }
+    .table-header .header-right { display:flex; align-items:center; gap:10px; }
+    .table-header .header-right .date-display { font-size:13px; color:var(--text-secondary); }
+    .table-scroll { overflow-x:auto; padding:0 4px; -webkit-overflow-scrolling:touch; width:100%; }
+    table { width:100%; border-collapse:collapse; font-size:14px; min-width:600px; }
+    th, td { padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); vertical-align:middle; }
+    th { background:var(--bg); color:var(--text-secondary); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:0.3px; white-space:nowrap; }
+    tr:hover td { background:var(--green-light); }
+    .today-highlight { background:rgba(76,175,80,0.04); border-left:3px solid var(--success); }
+
+    .badge { padding:2px 8px; border-radius:20px; font-size:11px; font-weight:600; display:inline-block; white-space:nowrap; }
+    .badge-success { background:rgba(46,125,50,0.12); color:var(--success); }
+    .badge-danger { background:rgba(244,67,54,0.12); color:var(--danger); }
+    .badge-warning { background:rgba(255,152,0,0.12); color:var(--warning); }
+    .badge-primary { background:rgba(46,125,50,0.12); color:var(--green); }
+    .badge-muted { background:rgba(138,138,160,0.12); color:var(--text-muted); }
+    .badge-schedule { background:rgba(138,138,160,0.1); color:#718096; }
+
+    .pagination { display:flex; justify-content:center; gap:4px; padding:10px 8px; border-top:1px solid var(--border); flex-wrap:wrap; }
+    .page-btn { background:transparent; border:1px solid var(--border); color:var(--text-secondary); padding:2px 10px; border-radius:20px; font-size:12px; cursor:pointer; transition:0.2s; min-width:28px; text-align:center; }
+    .page-btn.active { background:var(--green); color:white; border-color:var(--green); }
+    .page-btn:active { transform:scale(0.92); }
+
+    .schedule-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:16px; }
+    .schedule-card { background:var(--card); border-radius:var(--radius); padding:14px 16px; border:1px solid var(--border); box-shadow:var(--shadow); }
+    .schedule-card .day-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-weight:600; font-size:16px; color:var(--text); }
+    .schedule-item { display:flex; justify-content:space-between; padding:3px 0; font-size:14px; border-bottom:1px solid var(--border); }
+    .schedule-item:last-child { border-bottom:none; }
+    .schedule-item .label { color:var(--text-muted); }
+    .schedule-item .value { font-weight:500; color:var(--text); }
+    .edit-schedule-btn { background:var(--green-light); border:1px solid rgba(46,125,50,0.15); color:var(--green); width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:0.2s; font-size:14px; touch-action:manipulation; }
+    .edit-schedule-btn:active { transform:scale(0.92); }
+
+    .profile-upload-container { display:flex; align-items:center; gap:14px; padding:6px 0; flex-wrap:wrap; }
+    .profile-preview { width:68px; height:68px; border-radius:50%; object-fit:cover; border:3px solid var(--border); background:var(--bg); }
+    .profile-preview-placeholder { width:68px; height:68px; border-radius:50%; border:3px dashed var(--border); display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:26px; background:var(--bg); }
+    .profile-img-in-table { width:32px; height:32px; border-radius:50%; object-fit:cover; border:2px solid var(--border); background:var(--bg); }
+    .profile-img-in-table-placeholder { width:32px; height:32px; border-radius:50%; border:2px dashed var(--border); display:inline-flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:13px; background:var(--bg); }
+    .file-input-hidden { display:none; }
+
+    .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.4); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:200; display:none; align-items:center; justify-content:center; padding:20px; }
+    .modal-overlay.show { display:flex; }
+    .modal { background:var(--card); border-radius:var(--radius); padding:24px 20px; max-width:420px; width:100%; border:1px solid var(--border); max-height:90vh; overflow-y:auto; animation:fadeUp 0.3s ease; box-shadow:0 20px 60px rgba(0,0,0,0.15); }
+    .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+    .modal-header h2 { font-size:20px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:8px; }
+    .close-btn { background:none; border:none; color:var(--text-secondary); font-size:24px; cursor:pointer; padding:4px; transition:0.2s; }
+    .close-btn:active { transform:rotate(90deg); }
+    .filter-group { margin-bottom:12px; }
+    .filter-group label { display:block; font-size:12px; text-transform:uppercase; letter-spacing:0.3px; color:var(--text-secondary); font-weight:600; margin-bottom:4px; }
+    .filter-group input, .filter-group select { width:100%; padding:8px 12px; background:var(--bg); border:1px solid var(--border); border-radius:10px; color:var(--text); font-size:15px !important; outline:none; transition:0.2s; appearance:auto; }
+    .filter-group select option { background:var(--card); color:var(--text); }
+    .filter-group input:focus, .filter-group select:focus { border-color:var(--green); background:var(--card); box-shadow:0 0 0 3px rgba(46,125,50,0.1); }
+    .filter-actions { display:flex; gap:8px; margin-top:14px; }
+    .filter-actions .btn { flex:1; justify-content:center; height:40px; }
+
+    .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:var(--text); color:white; padding:8px 20px; border-radius:40px; z-index:999; font-size:14px; box-shadow:0 4px 20px rgba(0,0,0,0.12); animation:fadeUp 0.3s ease; max-width:90%; text-align:center; font-weight:500; }
+    .loading-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(255,255,255,0.9); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; flex-direction:column; gap:12px; z-index:9999; }
+    .loading-overlay.show { display:flex; }
+    .spinner { width:34px; height:34px; border:3px solid var(--border); border-top:3px solid var(--green); border-radius:50%; animation:spin 0.8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .loading-overlay p { color:var(--text-secondary); font-size:15px; font-weight:500; }
+    .no-data { padding:24px 10px; text-align:center; color:var(--text-muted); }
+    .no-data i { font-size:30px; opacity:0.3; margin-bottom:6px; }
+
+    .watermark { 
+      position:fixed; 
+      bottom:8px; 
+      left:50%; 
+      transform:translateX(-50%); 
+      text-align:center; 
+      z-index:999; 
+      pointer-events:none; 
+      opacity:0.3; 
+      font-size:11px; 
+      font-weight:900; 
+      color:var(--text-secondary); 
+      letter-spacing:0.8px; 
+      text-transform:uppercase; 
+      padding:4px 0; 
+      background:transparent; 
+    }
+    .watermark strong { 
+      color:var(--text); 
+      font-weight:900; 
+    }
+
+    .sidebar-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.3); z-index:140; }
+    .sidebar-overlay.show { display:block; }
+
+    @media (max-width: 820px) {
+      .app-container { flex-direction:column; }
+      .sidebar { 
+        position:fixed; top:0; left:0; width:280px; height:100vh; 
+        transform:translateX(-100%); z-index:150; padding:16px; 
+        box-shadow:4px 0 30px rgba(0,0,0,0.1); border-right:1px solid var(--border);
+        overflow-y:auto;
+      }
+      .sidebar.open { transform:translateX(0); }
+      .sidebar-overlay.show { display:block; }
+      .hamburger { display:block; }
+
+      .main-content { 
+        padding:12px 12px 80px; width:100%; 
+        margin-left:0;
+      }
+      .topbar { 
+        margin-bottom:14px; position:sticky; top:0; background:var(--bg); z-index:10; 
+        padding-top:6px; padding-bottom:6px;
+      }
+      .page-title { font-size:20px; }
+      .date-badge { font-size:11px; padding:4px 10px; }
+      .date-badge i { font-size:11px; }
+      .btn-icon { width:32px; height:32px; font-size:13px; }
+
+      .home-hero { padding:20px 16px; }
+      .home-hero h2 { font-size:22px; }
+      .home-hero p { font-size:14px; }
+      .home-logo { width:60px; height:60px; }
+
+      .home-features { grid-template-columns:repeat(2,1fr); gap:10px; }
+      .feature-card { padding:12px 10px; }
+      .feature-card .feature-icon { width:44px; height:44px; }
+      .feature-card .feature-icon img { width:24px; height:24px; }
+      .feature-card h4 { font-size:13px; }
+      .feature-card p { font-size:11px; }
+
+      .home-stats { grid-template-columns:repeat(2,1fr); gap:10px; }
+      .stat-box .number { font-size:24px; }
+      .stat-box .label { font-size:11px; }
+
+      .about-container {
+        flex-direction:column;
+        gap:16px;
+      }
+      .about-grid {
+        grid-template-columns:1fr 1fr;
+        gap:12px;
+      }
+      .about-item {
+        padding:12px 14px;
+      }
+      .about-item .icon-box {
+        width:36px;
+        height:36px;
+        min-width:36px;
+        font-size:16px;
+      }
+      .about-item .info h4 {
+        font-size:13px;
+      }
+      .about-item .info p {
+        font-size:12px;
+      }
+
+      .stats-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
+      .stat-card { padding:12px; }
+      .stat-value { font-size:20px; }
+
+      .schedule-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
+      .schedule-card { padding:12px; }
+
+      .search-bar { padding:12px; position:sticky; top:60px; z-index:9; }
+      .search-row { flex-direction:column; gap:6px; }
+      .search-input-wrap { width:100%; min-width:unset; height:38px; }
+      .search-input-wrap input { font-size:15px !important; }
+      .btn-group { width:100%; justify-content:flex-start; }
+      .btn { height:32px; font-size:12px; padding:0 12px; }
+
+      .table-scroll { padding:0 2px; }
+      table { font-size:13px; min-width:500px; }
+      th, td { padding:6px 8px; }
+
+      .modal { padding:16px; max-width:100%; margin:10px; }
+      .profile-preview { width:52px; height:52px; }
+      .profile-preview-placeholder { width:52px; height:52px; font-size:20px; }
+      .profile-upload-actions .btn { height:26px; font-size:10px; min-width:64px; }
+      
+      .watermark { left:50%; transform:translateX(-50%); }
+    }
+
+    @media (max-width: 480px) {
+      .main-content { padding:8px 8px 70px; }
+      .home-features { grid-template-columns:1fr 1fr; gap:6px; }
+      .home-stats { grid-template-columns:1fr 1fr; gap:6px; }
+      .stats-grid { grid-template-columns:1fr 1fr; gap:6px; }
+      .schedule-grid { grid-template-columns:1fr 1fr; gap:6px; }
+      .about-grid {
+        grid-template-columns:1fr;
+        gap:10px;
+      }
+      .stat-card { padding:8px 10px; }
+      .stat-value { font-size:18px; }
+      .stat-label { font-size:9px; }
+      .search-input-wrap { height:34px; }
+      .search-input-wrap input { font-size:14px !important; }
+      .btn { height:28px; font-size:11px; padding:0 10px; }
+      .btn-sm { height:24px; font-size:10px; padding:0 8px; }
+      .btn-xs { height:20px; font-size:9px; padding:0 6px; }
+      .table-header h3 { font-size:13px; }
+      .page-title { font-size:18px; }
+      .modal { padding:14px 12px; }
+      .profile-preview { width:44px; height:44px; }
+      .profile-preview-placeholder { width:44px; height:44px; font-size:18px; }
+      .sidebar { width:260px; padding:12px; }
+      .watermark { font-size:10px; bottom:4px; }
+      .date-badge { font-size:9px; padding:2px 6px; }
+      .date-badge i { font-size:9px; }
+      .btn-icon { width:28px; height:28px; font-size:11px; }
+    }
+
+    @media (max-width: 380px) {
+      .stats-grid { grid-template-columns:1fr; }
+      .home-features { grid-template-columns:1fr; }
+      .schedule-grid { grid-template-columns:1fr; }
+      table { font-size:11px; min-width:400px; }
+      th, td { padding:4px 5px; }
+      .badge { font-size:9px; padding:1px 5px; }
+    }
+
+    @media (min-width: 821px) {
+      .hamburger { display:none !important; }
+      .sidebar-overlay { display:none !important; }
+      .sidebar { transform:translateX(0) !important; position:fixed; top:0; left:0; bottom:0; height:100vh; overflow-y:auto; }
+      .main-content { margin-left:240px; }
+    }
+    html, body {
+      touch-action: pan-x pan-y;
+    }
+  </style>
+</head>
+<body>
+  <!-- ========== LOGIN PAGE ========== -->
+  <div class="login-page" id="loginPage">
+    <div class="login-wrapper">
+      <div class="login-card">
+        <div class="login-header">
+          <div class="brand-icon">
+            <img src="https://res.cloudinary.com/t3tg9lfb/image/upload/v1783515403/1000374024_11zon-256x256_ivfvnp.png" alt="SIBAO" />
+          </div>
+          <h2>SIBAO <span>TAS</span></h2>
+          <p>Teacher Attendance · RFID Integrated</p>
+        </div>
+
+        <div class="login-alert" id="loginAlert">
+          <i class="fas fa-exclamation-circle"></i>
+          <span id="alertMessage">Invalid credentials</span>
+        </div>
+
+        <form id="loginForm" onsubmit="return handleLogin(event)">
+          <div class="input-group">
+            <label><i class="fas fa-id-badge"></i> Admin ID</label>
+            <div class="input-wrap">
+              <i class="fas fa-user-shield"></i>
+              <input type="text" id="loginId" placeholder="Enter Admin ID" />
+            </div>
+          </div>
+          <div class="input-group">
+            <label><i class="fas fa-lock"></i> Password</label>
+            <div class="input-wrap">
+              <i class="fas fa-key"></i>
+              <input type="password" id="loginPassword" placeholder="Enter Password" />
+            </div>
+          </div>
+          <button type="submit" class="btn-login"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+        </form>
+
+        <div class="login-footer">
+          <div class="powered">
+            <i class="fas fa-bolt"></i> Powered By <strong>SIBAOJET</strong>
+          </div>
+          <div class="sub">SIBAO TAS v2.0 · Secure Database Auth</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MAIN APP ========== -->
+  <div id="mainApp">
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <div class="app-container">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <div class="brand-icon"><img src="https://res.cloudinary.com/t3tg9lfb/image/upload/v1783515403/1000374024_11zon-256x256_ivfvnp.png" alt="SIBAO Logo"></div>
+          <div class="brand-text">
+            <h1>SIBAO <small>TAS</small></h1>
+            <div class="sibao-tagline"><span>Faith</span> <span>·</span> <span>Knowledge</span> <span>·</span> <span>Service</span></div>
+            <span>founded 1999</span>
+          </div>
+        </div>
+        <nav class="sidebar-nav">
+          <div class="nav-label">Main</div>
+          <a href="#" class="active" data-tab="home" onclick="switchTab('home')"><i class="fas fa-home"></i> Home</a>
+          <a href="#" data-tab="users" onclick="switchTab('users')"><i class="fas fa-id-card"></i> Teachers <span class="badge" id="userBadge">0</span></a>
+          <a href="#" data-tab="attendance" onclick="switchTab('attendance')"><i class="fas fa-clipboard-list"></i> Attendance <span class="badge" id="attendanceBadge">0</span></a>
+          <a href="#" data-tab="records" onclick="switchTab('records')"><i class="fas fa-history"></i> Records <span class="badge" id="recordsBadge">0</span></a>
+          <a href="#" data-tab="schedule" onclick="switchTab('schedule')"><i class="fas fa-calendar-alt"></i> Schedule <span class="badge" id="scheduleBadge">0</span></a>
+          <div style="margin-top:auto;border-top:1px solid var(--border);padding-top:12px;">
+            <a href="#" onclick="logout()" style="color:var(--danger);"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </div>
+        </nav>
+        <div class="sidebar-footer">
+          <span class="status-dot"></span> Realtime Active
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div class="topbar-left">
+            <button class="hamburger" onclick="toggleSidebar()" aria-label="Toggle Navigation Sidebar"><i class="fas fa-bars"></i></button>
+            <h2 class="page-title" id="mainPageTitle">Home</h2>
+          </div>
+          <div class="topbar-right">
+            <div class="date-badge"><i class="far fa-calendar-alt"></i> <span id="topbarDateDisplay">Loading...</span></div>
+            <button class="btn-icon" onclick="refreshData()" title="Refresh and sync data"><i class="fas fa-sync-alt"></i></button>
+            <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+          </div>
+        </header>
+
+        <div class="tab-content active" id="tab-home">
+          <div class="home-container">
+            <div class="home-hero">
+              <div class="home-logo"><img src="https://res.cloudinary.com/t3tg9lfb/image/upload/v1783515403/1000374024_11zon-256x256_ivfvnp.png" alt="SIBAO Logo"></div>
+              <h2>Welcome to <span>SIBAO TAS</span></h2>
+              <p>Smart Teacher Attendance System with fully integrated RFID technology.</p>
+              <div class="home-actions">
+                <button class="btn btn-primary" onclick="switchTab('attendance')"><i class="fas fa-clipboard-list"></i> View Today's Attendance</button>
+                <button class="btn" onclick="switchTab('users')"><i class="fas fa-user-plus"></i> Manage Teachers</button>
+              </div>
+            </div>
+            <div class="home-features">
+              <div class="feature-card">
+                <div class="feature-icon"><img src="https://img.icons8.com/fluency/48/rfid-signal.png" alt="RFID"/></div>
+                <h4>RFID Terminal</h4>
+                <p>Instant logs sync via smart scanning cards.</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon"><img src="https://img.icons8.com/fluency/48/clock.png" alt="Realtime"/></div>
+                <h4>Realtime Sync</h4>
+                <p>Instant tracking dashboard tracking live logs.</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon"><img src="https://img.icons8.com/fluency/48/microsoft-excel-2019.png" alt="Export"/></div>
+                <h4>Excel Reports</h4>
+                <p>One-click clean CSV downloads anytime.</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon"><img src="https://img.icons8.com/fluency/48/calendar.png" alt="Schedule"/></div>
+                <h4>Shift Control</h4>
+                <p>Configure custom shifts dynamically.</p>
+              </div>
+            </div>
+            <div class="home-stats">
+              <div class="stat-box"><div class="number" id="totalTeachersHome">0</div><div class="label">Total Teachers</div></div>
+              <div class="stat-box"><div class="number" id="totalTodayHome">0</div><div class="label">Present Today</div></div>
+              <div class="stat-box"><div class="number" id="totalLateHome">0</div><div class="label">Late Today</div></div>
+              <div class="stat-box"><div class="number" id="totalDaysHome">0</div><div class="label">Schedule Days</div></div>
+            </div>
+
+            <div class="home-info">
+              <div class="about-container">
+                <div class="about-content">
+                  <div class="about-title">
+                    <i class="fas fa-info-circle" style="color:var(--green);"></i> About SIBAO TAS
+                  </div>
+                  <div class="about-grid">
+                    <div class="about-item">
+                      <div class="icon-box"><i class="fas fa-bullseye"></i></div>
+                      <div class="info">
+                        <h4>Purpose</h4>
+                        <p>Streamline teachers attendance tracking using RFID</p>
+                      </div>
+                    </div>
+                    <div class="about-item">
+                      <div class="icon-box"><i class="fas fa-code"></i></div>
+                      <div class="info">
+                        <h4>Technology</h4>
+                        <p>Built with Firebase, Cloudinary, and modern web technologies</p>
+                      </div>
+                    </div>
+                    <div class="about-item">
+                      <div class="icon-box"><i class="fas fa-star"></i></div>
+                      <div class="info">
+                        <h4>Features</h4>
+                        <p>Real-time updates, smart status detection, CSV export</p>
+                      </div>
+                    </div>
+                    <div class="about-item">
+                      <div class="icon-box"><i class="fas fa-shield-alt"></i></div>
+                      <div class="info">
+                        <h4>Security</h4>
+                        <p>Secure cloud-based storage with Firebase security rules</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-users">
+          <div class="search-bar">
+            <div class="search-row">
+              <div class="search-input-wrap"><i class="fas fa-search"></i><input type="text" id="userSearch" placeholder="Search teachers..." oninput="applyUserFilters()"></div>
+              <span class="record-count" id="userCountDisplay">0 teachers</span>
+            </div>
+            <div class="btn-group">
+              <button class="btn" onclick="openFilterModal('users')"><i class="fas fa-sliders-h"></i> Filters</button>
+              <button class="btn" onclick="clearUserFilters()"><i class="fas fa-times"></i> Clear</button>
+              <button class="btn btn-primary" onclick="openAddUserModal()"><i class="fas fa-plus"></i> Add</button>
+            </div>
+          </div>
+          <div class="stats-grid" id="userStats"></div>
+          <div class="table-container">
+            <div class="table-header"><h3><i class="fas fa-id-badge" style="color:var(--green);"></i> Registered Teachers</h3><button class="btn btn-sm btn-primary" onclick="exportUsersCSV()"><i class="fas fa-file-csv"></i> Export</button></div>
+            <div class="table-scroll"><div id="userTableData"></div></div>
+            <div id="userPagination"></div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-attendance">
+          <div class="search-bar">
+            <div class="search-row">
+              <div class="search-input-wrap"><i class="fas fa-search"></i><input type="text" id="attendanceSearch" placeholder="Search attendance..." oninput="applyAttendanceFilters()"></div>
+              <span class="record-count" id="attendanceCountDisplay">0 records</span>
+            </div>
+            <div class="btn-group">
+              <button class="btn" onclick="openFilterModal('attendance')"><i class="fas fa-sliders-h"></i> Filters</button>
+              <button class="btn" onclick="clearAttendanceFilters()"><i class="fas fa-times"></i> Clear</button>
+            </div>
+          </div>
+          <div class="stats-grid" id="attendanceStats"></div>
+          <div class="table-container">
+            <div class="table-header">
+              <h3><i class="fas fa-clock" style="color:var(--green);"></i> Today's Attendance</h3>
+              <div class="header-right">
+                <span class="date-display" id="todayDateDisplay"></span>
+                <button class="btn btn-sm btn-primary" onclick="exportAttendanceCSV()"><i class="fas fa-file-csv"></i> Export</button>
+              </div>
+            </div>
+            <div class="table-scroll"><div id="attendanceTableData"></div></div>
+            <div id="attendancePagination"></div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-records">
+          <div class="search-bar">
+            <div class="search-row">
+              <div class="search-input-wrap"><i class="fas fa-search"></i><input type="text" id="recordsSearch" placeholder="Search records..." oninput="applyRecordsFilters()"></div>
+              <span class="record-count" id="recordsCountDisplay">0 records</span>
+            </div>
+            <div class="btn-group">
+              <button class="btn" onclick="openFilterModal('records')"><i class="fas fa-sliders-h"></i> Filters</button>
+              <button class="btn" onclick="clearRecordsFilters()"><i class="fas fa-times"></i> Clear</button>
+            </div>
+          </div>
+          <div class="stats-grid" id="recordsStats"></div>
+          <div class="table-container">
+            <div class="table-header">
+              <h3><i class="fas fa-history" style="color:var(--green);"></i> Attendance History</h3>
+              <button class="btn btn-sm btn-primary" onclick="exportRecordsCSV()"><i class="fas fa-file-csv"></i> Export</button>
+            </div>
+            <div class="table-scroll"><div id="recordsTableData"></div></div>
+            <div id="recordsPagination"></div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-schedule">
+          <div class="search-bar">
+            <div class="search-row">
+              <div class="search-input-wrap"><i class="fas fa-search"></i><input type="text" id="scheduleSearch" placeholder="Search day..." oninput="applyScheduleFilters()"></div>
+              <span class="record-count" id="scheduleCountDisplay">0 entries</span>
+            </div>
+            <div class="btn-group">
+              <button class="btn" onclick="openFilterModal('schedule')"><i class="fas fa-sliders-h"></i> Filters</button>
+              <button class="btn" onclick="applyScheduleFilters()"><i class="fas fa-times"></i> Clear</button>
+            </div>
+          </div>
+          <div class="schedule-grid" id="scheduleStats"></div>
+          <div class="table-container">
+            <div class="table-header"><h3><i class="fas fa-calendar-alt" style="color:var(--green);"></i> Configured Shift Settings</h3></div>
+            <div class="schedule-grid" id="scheduleGridData" style="padding:16px;"></div>
+            <div class="table-scroll"><div id="scheduleTableData"></div></div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div class="watermark">Powered by <strong>SIBAO TAS Terminal v1.0</strong></div>
+
+    <div class="modal-overlay" id="filterModal"><div class="modal"><div class="modal-header"><h2>Filters</h2><button class="close-btn" onclick="closeFilterModal()">&times;</button></div><div id="filterContent"></div></div></div>
+    
+    <div class="modal-overlay" id="addUserModal"><div class="modal"><div class="modal-header"><h2><i class="fas fa-user-plus" style="color:var(--green);"></i> New Teacher</h2><button class="close-btn" onclick="closeAddUserModal()">&times;</button></div>
+      <div class="filter-group"><label>Full Name</label><input type="text" id="newUserName" placeholder="e.g. Jane Doe"></div>
+      <div class="filter-group"><label>RFID UID</label><input type="text" id="newUserUID" placeholder="e.g. 3A4B5C6D"></div>
+      <div class="filter-group"><label>Department</label><select id="newUserDept"><option>Science</option><option>Arts</option><option>Commercial</option></select></div>
+      <div class="filter-group"><label>Email</label><input type="email" id="newUserEmail" placeholder="user@school.com"></div>
+      <div class="filter-group"><label>Profile Picture</label>
+        <div class="profile-upload-container">
+          <img id="newUserProfilePreview" class="profile-preview" src="" alt="Profile" style="display:none;">
+          <div id="newUserProfilePlaceholder" class="profile-preview-placeholder"><i class="fas fa-user"></i></div>
+          <div class="profile-upload-actions">
+            <input type="file" id="newUserFileInput" class="file-input-hidden" accept="image/*" onchange="handleFileUpload('new', this)">
+            <button class="btn btn-primary" onclick="document.getElementById('newUserFileInput').click()"><i class="fas fa-cloud-upload-alt"></i> Upload</button>
+            <button class="btn" onclick="removeNewUserPhoto()" id="removeNewPhotoBtn" style="display:none;"><i class="fas fa-times"></i> Remove</button>
+          </div>
+        </div>
+        <input type="hidden" id="newUserProfileUrl" value="">
+      </div>
+      <div class="filter-actions"><button class="btn" onclick="closeAddUserModal()">Cancel</button><button class="btn btn-primary" onclick="addUser()"><i class="fas fa-check"></i> Save Teacher</button></div>
+    </div></div>
+
+    <div class="modal-overlay" id="editUserModal"><div class="modal"><div class="modal-header"><h2><i class="fas fa-user-edit" style="color:#ff9800;"></i> Edit Teacher</h2><button class="close-btn" onclick="closeEditUserModal()">&times;</button></div>
+      <input type="hidden" id="editUserKey">
+      <div class="filter-group"><label>Full Name</label><input type="text" id="editUserName"></div>
+      <div class="filter-group"><label>RFID UID (Immutable)</label><input type="text" id="editUserUID" readonly style="opacity:0.6;"></div>
+      <div class="filter-group"><label>Department</label><select id="editUserDept"><option>Science</option><option>Arts</option><option>Commercial</option></select></div>
+      <div class="filter-group"><label>Email</label><input type="email" id="editUserEmail"></div>
+      <div class="filter-group"><label>Status</label><select id="editUserStatus"><option>Active</option><option>Inactive</option></select></div>
+      <div class="filter-group"><label>Profile Picture</label>
+        <div class="profile-upload-container">
+          <img id="editUserProfilePreview" class="profile-preview" src="" alt="Profile" style="display:none;">
+          <div id="editUserProfilePlaceholder" class="profile-preview-placeholder"><i class="fas fa-user"></i></div>
+          <div class="profile-upload-actions">
+            <input type="file" id="editUserFileInput" class="file-input-hidden" accept="image/*" onchange="handleFileUpload('edit', this)">
+            <button class="btn btn-primary" onclick="document.getElementById('editUserFileInput').click()"><i class="fas fa-cloud-upload-alt"></i> Change</button>
+            <button class="btn" onclick="removeEditUserPhoto()" id="removeEditPhotoBtn" style="display:none;"><i class="fas fa-times"></i> Remove</button>
+          </div>
+        </div>
+        <input type="hidden" id="editUserProfileUrl" value="">
+      </div>
+      <div class="filter-actions"><button class="btn" onclick="closeEditUserModal()">Cancel</button><button class="btn btn-warning" style="color:white;" onclick="updateUser()"><i class="fas fa-save"></i> Save Changes</button></div>
+    </div></div>
+
+    <div class="modal-overlay" id="editScheduleModal"><div class="modal"><div class="modal-header"><h2><i class="fas fa-calendar-edit" style="color:var(--green);"></i> Adjust Shift Schedule</h2><button class="close-btn" onclick="closeEditScheduleModal()">&times;</button></div>
+      <div id="editScheduleModalContent"></div>
+    </div></div>
+
+    <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div><p>Synchronizing Realtime Cloud Tables...</p></div>
+  </div>
+
+  <script>
+    // ========== FIREBASE CONFIG ==========
+    const firebaseConfig = {
+      apiKey: "AIzaSyA-bBRMrAyHuEuD8UkCJr8ieB77U72DJSU",
+      authDomain: "clock-in-and-clock-out-28176.firebaseapp.com",
+      databaseURL: "https://clock-in-and-clock-out-28176-default-rtdb.firebaseio.com",
+      projectId: "clock-in-and-clock-out-28176",
+      storageBucket: "clock-in-and-clock-out-28176.firebasestorage.app",
+      messagingSenderId: "404643144546",
+      appId: "1:404643144546:web:d385a193f39eb54faec23b"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // ========== LOGIN HANDLER ==========
+    const loginPage = document.getElementById('loginPage');
+    const mainApp = document.getElementById('mainApp');
+    const alertBox = document.getElementById('loginAlert');
+    const alertMsg = document.getElementById('alertMessage');
+    const idInput = document.getElementById('loginId');
+    const passInput = document.getElementById('loginPassword');
+
+    function showAlert(msg, isSuccess = false) {
+      alertMsg.textContent = msg;
+      alertBox.classList.add('show');
+      if (isSuccess) {
+        alertBox.classList.add('success');
+        alertBox.classList.remove('alert-danger');
+      } else {
+        alertBox.classList.remove('success');
+      }
+      clearTimeout(window.alertTimeout);
+      window.alertTimeout = setTimeout(() => {
+        alertBox.classList.remove('show');
+        alertBox.classList.remove('success');
+      }, 4000);
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const adminId = idInput.value.trim();
+      const password = passInput.value.trim();
+
+      if (!adminId || !password) {
+        showAlert('Please enter both Admin ID and Password.');
+        return false;
+      }
+
+      showAlert('🔍 Verifying credentials...', false);
+
+      db.ref('admins').orderByChild('uid').equalTo(adminId).once('value')
+        .then((snapshot) => {
+          const data = snapshot.val();
+          if (!data) {
+            showAlert('❌ Admin ID not found. Please check and try again.');
+            return;
+          }
+
+          let found = false;
+          let adminData = null;
+          for (const [key, admin] of Object.entries(data)) {
+            if (admin.uid === adminId && admin.password === password) {
+              found = true;
+              adminData = { key, ...admin };
+              break;
+            }
+          }
+
+          if (found && adminData) {
+            showAlert('✅ Welcome ' + adminData.name + '!', true);
+            
+            sessionStorage.setItem('sibao_admin_id', adminId);
+            sessionStorage.setItem('sibao_admin_name', adminData.name || 'Administrator');
+            sessionStorage.setItem('sibao_admin_role', adminData.role || 'admin');
+            sessionStorage.setItem('sibao_admin_key', adminData.key);
+            sessionStorage.setItem('sibao_auth', 'true');
+            
+            setTimeout(() => {
+              loginPage.style.display = 'none';
+              mainApp.classList.add('visible');
+              setTimeout(startLiveSync, 200);
+            }, 800);
+          } else {
+            showAlert('❌ Incorrect password. Please try again.');
+          }
+        })
+        .catch((error) => {
+          console.error('Login error:', error);
+          showAlert('⚠️ Database error: ' + error.message);
+        });
+
+      return false;
+    }
+
+    function logout() {
+      if (!confirm('Are you sure you want to logout?')) return;
+      sessionStorage.removeItem('sibao_auth');
+      sessionStorage.removeItem('sibao_admin_id');
+      sessionStorage.removeItem('sibao_admin_name');
+      sessionStorage.removeItem('sibao_admin_role');
+      sessionStorage.removeItem('sibao_admin_key');
+      mainApp.classList.remove('visible');
+      loginPage.style.display = 'flex';
+      // Clear input fields
+      idInput.value = '';
+      passInput.value = '';
+    }
+
+    // Check for existing session
+    window.addEventListener('load', function() {
+      if (sessionStorage.getItem('sibao_auth') === 'true') {
+        loginPage.style.display = 'none';
+        mainApp.classList.add('visible');
+        setTimeout(startLiveSync, 200);
+      }
+    });
+
+    // ========== MAIN APP FUNCTIONS ==========
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); }
+    function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('show'); }
+
+    const CLOUDINARY_CLOUD_NAME = 't3tg9lfb';
+    const CLOUDINARY_UPLOAD_PRESET = 'ml_default';
+
+    let users=[], attendance=[], records=[], schedule=[];
+    let currentTab='home';
+    let userPage=1, attendancePage=1, recordsPage=1, schedulePage=1;
+    const perPage=10;
+    const MAX_TEACHERS=100;
+
+    function getTodayDate() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+    function getTodayDayName() {
+      return ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];
+    }
+    function getScheduleForDay(dayName) {
+      return schedule.find(s => s.day === dayName);
+    }
+    function getUserPhoto(uid) {
+      const u = users.find(t=>t.uid===uid);
+      return u ? u.profilePhoto : null;
+    }
+    function getUserName(uid) {
+      const u = users.find(t=>t.uid===uid);
+      return u ? u.name : null;
+    }
+    function getUserDepartment(uid) {
+      const u = users.find(t=>t.uid===uid);
+      return u ? u.department : null;
+    }
+
+    function hasClockInToday(uid, date) {
+      const today = date || getTodayDate();
+      const todayRecords = attendance.filter(a => {
+        if (!a.timestamp) return false;
+        const recordDate = a.timestamp.split(' ')[0];
+        return a.uid === uid && recordDate === today && a.action === 'IN';
+      });
+      return todayRecords.length > 0;
+    }
+
+    function hasClockOutToday(uid, date) {
+      const today = date || getTodayDate();
+      const todayRecords = attendance.filter(a => {
+        if (!a.timestamp) return false;
+        const recordDate = a.timestamp.split(' ')[0];
+        return a.uid === uid && recordDate === today && a.action === 'OUT';
+      });
+      return todayRecords.length > 0;
+    }
+
+    function determineStatusFromSchedule(clockInTime, dateStr) {
+      if (!clockInTime || clockInTime === '--') return 'NO SCHEDULE';
+      
+      const today = getTodayDate();
+      
+      if (dateStr !== today) {
+        return null;
+      }
+      
+      const d = new Date(dateStr + 'T00:00:00');
+      const dayName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d.getDay()];
+      const daySchedule = getScheduleForDay(dayName);
+      
+      if (!daySchedule || !daySchedule.clockIn || daySchedule.clockIn === '--' || daySchedule.clockIn === 'NO SCHEDULE') {
+        return 'NO SCHEDULE';
+      }
+      
+      const threshold = daySchedule.latenessThreshold || 40;
+      const sch = daySchedule.clockIn || '07:00:00';
+      
+      const c = clockInTime.split(':');
+      const s = sch.split(':');
+      const cMin = parseInt(c[0])*60 + parseInt(c[1]) + (parseInt(c[2]) || 0)/60;
+      const sMin = parseInt(s[0])*60 + parseInt(s[1]) + (parseInt(s[2]) || 0)/60;
+      const diff = cMin - sMin;
+      
+      if (diff < 0) return 'EARLY';
+      if (diff <= threshold) return 'ON TIME';
+      return 'LATE';
+    }
+
+    function mergeAttendanceRecords(data) {
+      const merged = {};
+      
+      data.forEach(record => {
+        if (!record.timestamp) return;
+        const parts = record.timestamp.split(' ');
+        if (parts.length < 2) return;
+        const date = parts[0];
+        const time = parts[1];
+        const key = `${record.uid}_${date}`;
+        
+        if (!merged[key]) {
+          merged[key] = {
+            uid: record.uid,
+            name: getUserName(record.uid) || record.name || 'Unknown',
+            department: getUserDepartment(record.uid) || record.department || 'N/A',
+            date: date,
+            clockIn: '--',
+            clockOut: '--',
+            status: record.status || 'PENDING',
+            photo: getUserPhoto(record.uid)
+          };
+        }
+        
+        if (record.action === 'IN') {
+          merged[key].clockIn = time;
+          const newStatus = determineStatusFromSchedule(time, date);
+          if (newStatus !== null) {
+            merged[key].status = newStatus;
+          } else {
+            merged[key].status = record.status || 'PENDING';
+          }
+        } else if (record.action === 'OUT') {
+          merged[key].clockOut = time;
+          if (merged[key].clockIn !== '--' && merged[key].status === 'PENDING') {
+            const newStatus = determineStatusFromSchedule(merged[key].clockIn, date);
+            if (newStatus !== null) {
+              merged[key].status = newStatus;
+            }
+          }
+        }
+      });
+      
+      return Object.values(merged);
+    }
+
+    let filterState = {
+      users:{dept:'all',status:'all'},
+      attendance:{status:'all'},
+      records:{startDate:'',endDate:'',status:'all'},
+      schedule:{day:'all'}
+    };
+
+    function $(id){ return document.getElementById(id); }
+    function showLoading(v){ $('loadingOverlay').classList.toggle('show',v); }
+    function toast(msg){
+      const t=document.createElement('div');
+      t.className='toast';
+      t.textContent=msg;
+      document.body.appendChild(t);
+      setTimeout(()=>{
+        t.style.opacity='0';
+        setTimeout(()=>t.remove(),300);
+      },2800);
+    }
+
+    function switchTab(tab) {
+      currentTab=tab;
+      document.querySelectorAll('.sidebar-nav a').forEach(a=>a.classList.remove('active'));
+      document.querySelector(`.sidebar-nav a[data-tab="${tab}"]`).classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+      $(`tab-${tab}`).classList.add('active');
+      const titles={home:'Home',users:'Teachers',attendance:'Attendance',records:'Records',schedule:'Schedule'};
+      $('mainPageTitle').textContent=titles[tab]||'Dashboard';
+      closeSidebar();
+      if(tab==='users') applyUserFilters();
+      if(tab==='attendance') applyAttendanceFilters();
+      if(tab==='records') applyRecordsFilters();
+      if(tab==='schedule') applyScheduleFilters();
+    }
+
+    function handleFileUpload(type, input) {
+      const file = input.files[0];
+      if(!file) return;
+      showLoading(true);
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+      fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method:'POST', body:formData })
+      .then(res => res.json())
+      .then(data => {
+        showLoading(false);
+        if(data.secure_url) {
+          const url = data.secure_url;
+          if(type==='new') {
+            $('newUserProfileUrl').value=url;
+            $('newUserProfilePreview').src=url;
+            $('newUserProfilePreview').style.display='block';
+            if($('newUserProfilePlaceholder')) $('newUserProfilePlaceholder').style.display='none';
+            $('removeNewPhotoBtn').style.display='inline-flex';
+          } else {
+            $('editUserProfileUrl').value=url;
+            $('editUserProfilePreview').src=url;
+            $('editUserProfilePreview').style.display='block';
+            if($('editUserProfilePlaceholder')) $('editUserProfilePlaceholder').style.display='none';
+            $('removeEditPhotoBtn').style.display='inline-flex';
+          }
+          toast('✅ Photo uploaded');
+        } else toast('❌ Upload failed');
+        input.value='';
+      }).catch(e=>{
+        showLoading(false);
+        toast('❌ Upload failed');
+        input.value='';
+      });
+    }
+
+    function removeNewUserPhoto(){
+      $('newUserProfileUrl').value='';
+      $('newUserProfilePreview').style.display='none';
+      $('newUserProfilePlaceholder').style.display='flex';
+      $('removeNewPhotoBtn').style.display='none';
+      toast('🔄 Photo removed');
+    }
+    function removeEditUserPhoto(){
+      $('editUserProfileUrl').value='';
+      $('editUserProfilePreview').style.display='none';
+      $('editUserProfilePlaceholder').style.display='flex';
+      $('removeEditPhotoBtn').style.display='none';
+      toast('🔄 Photo removed');
+    }
+
+    function downloadCSV(csv,name){
+      const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url;
+      a.download=name;
+      a.style.display='none';
+      document.body.appendChild(a);
+      setTimeout(()=>{
+        a.click();
+        setTimeout(()=>{
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          toast('✅ Download started');
+        },100);
+      },100);
+    }
+
+    function openFilterModal(tab){
+      const content=$('filterContent');
+      if(!content) return;
+      let html='';
+      if(tab==='users'){
+        html=`<div class="filter-group"><label>Department</label><select id="filterUserDept"><option value="all">All</option><option ${filterState.users.dept==='Science'?'selected':''}>Science</option><option ${filterState.users.dept==='Arts'?'selected':''}>Arts</option><option ${filterState.users.dept==='Commercial'?'selected':''}>Commercial</option></select></div>
+              <div class="filter-group"><label>Status</label><select id="filterUserStatus"><option value="all">All</option><option ${filterState.users.status==='Active'?'selected':''}>Active</option><option ${filterState.users.status==='Inactive'?'selected':''}>Inactive</option></select></div>`;
+      } else if(tab==='attendance'){
+        html=`<div class="filter-group"><label>Status</label><select id="filterAttStatus"><option value="all">All</option><option ${filterState.attendance.status==='ON TIME'?'selected':''}>ON TIME</option><option ${filterState.attendance.status==='LATE'?'selected':''}>LATE</option><option ${filterState.attendance.status==='EARLY'?'selected':''}>EARLY</option><option ${filterState.attendance.status==='NO SCHEDULE'?'selected':''}>NO SCHEDULE</option></select></div>`;
+      } else if(tab==='records'){
+        html=`<div class="filter-group"><label>Start Date</label><input type="date" id="filterRecStart" value="${filterState.records.startDate}"></div>
+              <div class="filter-group"><label>End Date</label><input type="date" id="filterRecEnd" value="${filterState.records.endDate}"></div>
+              <div class="filter-group"><label>Status</label><select id="filterRecStatus"><option value="all">All</option><option ${filterState.records.status==='ON TIME'?'selected':''}>ON TIME</option><option ${filterState.records.status==='LATE'?'selected':''}>LATE</option><option ${filterState.records.status==='EARLY'?'selected':''}>EARLY</option><option ${filterState.records.status==='NO SCHEDULE'?'selected':''}>NO SCHEDULE</option></select></div>`;
+      } else if(tab==='schedule'){
+        const days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+        html=`<div class="filter-group"><label>Weekday</label><select id="filterScheduleDay"><option value="all">All</option>${days.map(d=>`<option ${filterState.schedule.day===d?'selected':''}>${d}</option>`).join('')}</select></div>`;
+      }
+      html+=`<div class="filter-actions"><button class="btn" onclick="closeFilterModal()">Cancel</button><button class="btn btn-primary" onclick="applyFiltersFromModal('${tab}')">Apply</button></div>`;
+      content.innerHTML=html;
+      $('filterModal').classList.add('show');
+    }
+    function closeFilterModal(){ $('filterModal').classList.remove('show'); }
+    function applyFiltersFromModal(tab){
+      if(tab==='users'){
+        filterState.users.dept=$('filterUserDept').value;
+        filterState.users.status=$('filterUserStatus').value;
+        applyUserFilters();
+      } else if(tab==='attendance'){
+        filterState.attendance.status=$('filterAttStatus').value;
+        applyAttendanceFilters();
+      } else if(tab==='records'){
+        filterState.records.startDate=$('filterRecStart').value;
+        filterState.records.endDate=$('filterRecEnd').value;
+        filterState.records.status=$('filterRecStatus').value;
+        applyRecordsFilters();
+      } else if(tab==='schedule'){
+        filterState.schedule.day=$('filterScheduleDay').value;
+        applyScheduleFilters();
+      }
+      closeFilterModal();
+    }
+
+    // TEACHERS
+    function applyUserFilters(){
+      let data=[...users];
+      const q=$('userSearch').value.toLowerCase();
+      if(q) data=data.filter(u=>(u.name||'').toLowerCase().includes(q)||(u.uid||'').toLowerCase().includes(q));
+      if(filterState.users.dept!=='all') data=data.filter(u=>u.department===filterState.users.dept);
+      if(filterState.users.status!=='all') data=data.filter(u=>u.status===filterState.users.status);
+      $('userCountDisplay').textContent=data.length+' teachers';
+      renderUserStats(data);
+      renderUserTable(data);
+    }
+    function renderUserStats(data){
+      const total=data.length;
+      const active=data.filter(u=>u.status==='Active').length;
+      const inactive=data.filter(u=>u.status==='Inactive').length;
+      const depts = new Set(data.map(u=>u.department)).size;
+      $('userStats').innerHTML=`
+        <div class="stat-card"><div class="stat-label">TOTAL TEACHERS</div><div class="stat-value">${total}</div></div>
+        <div class="stat-card"><div class="stat-label">ACTIVE</div><div class="stat-value success">${active}</div></div>
+        <div class="stat-card"><div class="stat-label">INACTIVE</div><div class="stat-value danger">${inactive}</div></div>
+        <div class="stat-card"><div class="stat-label">DEPTS</div><div class="stat-value">${depts}</div></div>
+      `;
+    }
+    function renderUserTable(data){
+      const start=(userPage-1)*perPage, end=start+perPage, page=data.slice(start,end);
+      if(!page.length){
+        $('userTableData').innerHTML=`<div class="no-data"><i class="fas fa-user-friends"></i><p>No registered teachers matched filter criteria.</p></div>`;
+        $('userPagination').innerHTML=''; return;
+      }
+      let html=`<table><thead><tr><th>#</th><th>PHOTO</th><th>NAME</th><th>RFID UID</th><th>DEPT</th><th>EMAIL</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody>`;
+      page.forEach((u, index)=>{
+        const num = start + index + 1;
+        const pic = u.profilePhoto ? `<img class="profile-img-in-table" src="${u.profilePhoto}" alt="Photo">` : `<div class="profile-img-in-table-placeholder"><i class="fas fa-user"></i></div>`;
+        html+=`<tr>
+          <td>${num}</td>
+          <td>${pic}</td>
+          <td><strong>${u.name||'N/A'}</strong></td>
+          <td><code style="font-weight:700;color:var(--green);">${u.uid}</code></td>
+          <td>${u.department||'N/A'}</td>
+          <td><span style="font-size:12px;color:var(--text-secondary);">${u.email||'N/A'}</span></td>
+          <td><span class="badge ${u.status==='Active'?'badge-success':'badge-danger'}">${u.status}</span></td>
+          <td><div class="btn-group"><button class="btn btn-xs btn-warning" style="color:white;" onclick="openEditUserModal('${u.key}')"><i class="fas fa-edit"></i></button><button class="btn btn-xs btn-danger" onclick="removeUser('${u.key}')"><i class="fas fa-trash"></i></button></div></td>
+        </tr>`;
+      });
+      html+='</tbody></table>';
+      $('userTableData').innerHTML=html;
+      const pages=Math.ceil(data.length/perPage);
+      let p='<div class="pagination">';
+      for(let i=1;i<=Math.min(pages,10);i++) p+=`<button class="page-btn ${i===userPage?'active':''}" onclick="userPage=${i};renderUserTable(data);">${i}</button>`;
+      p+='</div>'; $('userPagination').innerHTML=p;
+    }
+    function openEditUserModal(key){
+      const u=users.find(t=>t.key===key); if(!u) return;
+      $('editUserModal').classList.add('show');
+      $('editUserKey').value=key; $('editUserName').value=u.name||''; $('editUserUID').value=u.uid;
+      $('editUserDept').value=u.department||'Science'; $('editUserEmail').value=u.email||''; $('editUserStatus').value=u.status||'Active';
+      $('editUserProfileUrl').value=u.profilePhoto||'';
+      if(u.profilePhoto) {
+        $('editUserProfilePreview').src=u.profilePhoto; $('editUserProfilePreview').style.display='block';
+        if($('editUserProfilePlaceholder')) $('editUserProfilePlaceholder').style.display='none';
+        $('removeEditPhotoBtn').style.display='inline-flex';
+      } else {
+        $('editUserProfilePreview').style.display='none'; $('editUserProfilePlaceholder').style.display='flex';
+        $('removeEditPhotoBtn').style.display='none';
+      }
+    }
+    function closeEditUserModal(){ $('editUserModal').classList.remove('show'); }
+    function updateUser(){
+      const key=$('editUserKey').value, name=$('editUserName').value.trim(), dept=$('editUserDept').value, email=$('editUserEmail').value.trim()||'N/A', status=$('editUserStatus').value, photo=$('editUserProfileUrl').value||null;
+      if(!name) return toast('⚠️ Name is required');
+      showLoading(true);
+      db.ref('teachers/'+key).update({name,department:dept,email,status,profilePhoto:photo}).then(()=>{
+        closeEditUserModal(); showLoading(false); toast('✅ Teacher updated');
+      }).catch(e=>{ showLoading(false); toast('❌ '+e.message); });
+    }
+    function clearUserFilters(){ filterState.users={dept:'all',status:'all'}; $('userSearch').value=''; applyUserFilters(); toast('🔄 Filters reset'); }
+    function openAddUserModal(){ if(users.length>=MAX_TEACHERS) return toast(`⚠️ Maximum ${MAX_TEACHERS} teachers`); $('addUserModal').classList.add('show'); $('newUserName').value=''; $('newUserUID').value=''; $('newUserEmail').value=''; $('newUserProfileUrl').value=''; $('newUserProfilePreview').style.display='none'; $('newUserProfilePlaceholder').style.display='flex'; $('removeNewPhotoBtn').style.display='none'; }
+    function closeAddUserModal(){ $('addUserModal').classList.remove('show'); }
+    function addUser(){
+      if(users.length>=MAX_TEACHERS) return toast(`⚠️ Maximum ${MAX_TEACHERS} teachers`);
+      const name=$('newUserName').value.trim(), uid=$('newUserUID').value.trim().toUpperCase().replace(/[^A-F0-9]/g,''), dept=$('newUserDept').value, email=$('newUserEmail').value.trim()||'N/A', profilePhoto=$('newUserProfileUrl').value||null;
+      if(!name||!uid) return toast('⚠️ Name and RFID UID required');
+      if(users.some(t=>t.uid===uid)) return toast('⚠️ UID already registered');
+      const obj={name,uid,department:dept,email,status:'Active',profilePhoto,createdAt:new Date().toISOString()};
+      showLoading(true);
+      db.ref('teachers').push(obj).then(()=>{ closeAddUserModal(); showLoading(false); toast('✅ Teacher added'); }).catch(e=>{ showLoading(false); toast('❌ '+e.message); });
+    }
+    function removeUser(key){ if(!confirm('Delete this teacher?')) return; db.ref('teachers/'+key).remove().then(()=>toast('🗑️ Teacher removed')).catch(e=>toast('❌ '+e.message)); }
+    
+    function exportUsersCSV(){
+      if(!users.length) return toast('⚠️ No teachers');
+      let csv='Name,RFID UID,Department,Email,Status\n';
+      users.forEach(t=>{ csv+=`"${(t.name||'').replace(/"/g,'""')}","${t.uid}","${(t.department||'').replace(/"/g,'""')}","${(t.email||'').replace(/"/g,'""')}","${(t.status||'').replace(/"/g,'""')}"\n`; });
+      downloadCSV(csv,'sibao_teachers_export.csv');
+    }
+
+    // ATTENDANCE
+    function applyAttendanceFilters(){
+      let mergedData = mergeAttendanceRecords(attendance);
+      let data = [...mergedData];
+      
+      const q=$('attendanceSearch').value.toLowerCase();
+      if(q) data=data.filter(a=>(a.name||'').toLowerCase().includes(q)||(a.uid||'').toLowerCase().includes(q));
+      if(filterState.attendance.status!=='all') data=data.filter(a=>a.status===filterState.attendance.status);
+      
+      $('attendanceCountDisplay').textContent=data.length+' records';
+      renderAttendanceStats(data);
+      renderAttendanceTable(data);
+    }
+    
+    function renderAttendanceStats(data){
+      const present = data.filter(a=>a.clockIn !== '--').length;
+      const late = data.filter(a=>a.status === 'LATE').length;
+      const early = data.filter(a=>a.status === 'EARLY').length;
+      const notYet = Math.max(0, users.length - present);
+      
+      $('attendanceStats').innerHTML=`
+        <div class="stat-card"><div class="stat-label">PRESENT TODAY</div><div class="stat-value success">${present}</div></div>
+        <div class="stat-card"><div class="stat-label">LATE</div><div class="stat-value warning">${late}</div></div>
+        <div class="stat-card"><div class="stat-label">EARLY</div><div class="stat-value" style="color:var(--green);">${early}</div></div>
+        <div class="stat-card"><div class="stat-label">NOT YET IN</div><div class="stat-value danger">${notYet}</div></div>
+      `;
+    }
+    
+    function renderAttendanceTable(data){
+      const start=(attendancePage-1)*perPage, end=start+perPage, page=data.slice(start,end);
+      if(!page.length){
+        $('attendanceTableData').innerHTML=`<div class="no-data"><i class="fas fa-clipboard-list"></i><p>No attendance records today</p></div>`;
+        $('attendancePagination').innerHTML=''; return;
+      }
+      
+      let html=`<table><thead><tr><th>#</th><th>PHOTO</th><th>DATE</th><th>NAME</th><th>RFID</th><th>CLOCK IN</th><th>CLOCK OUT</th><th>STATUS</th></tr></thead><tbody>`;
+      
+      page.forEach((a, index)=>{
+        const num = start + index + 1;
+        const photo=getUserPhoto(a.uid);
+        const photoHtml=photo?`<img class="profile-img-in-table" src="${photo}" alt="Photo">` : `<div class="profile-img-in-table-placeholder"><i class="fas fa-user"></i></div>`;
+        
+        let bClass='badge-muted';
+        if(a.status === 'ON TIME' || a.status === 'EARLY') bClass='badge-success';
+        if(a.status === 'LATE') bClass='badge-warning';
+        if(a.status === 'NO SCHEDULE') bClass='badge-schedule';
+        
+        html+=`<tr>
+          <td>${num}</td>
+          <td>${photoHtml}</td>
+          <td>${a.date || getTodayDate()}</td>
+          <td><strong>${a.name||'Teacher'}</strong></td>
+          <td><code style="font-size:11px;">${a.uid}</code></td>
+          <td><span style="font-weight:600;color:var(--green);">${a.clockIn}</span></td>
+          <td><span style="font-weight:600;color:var(--danger);">${a.clockOut}</span></td>
+          <td><span class="badge ${bClass}">${a.status||'PENDING'}</span></td>
+        </tr>`;
+      });
+      
+      html+='</tbody></table>';
+      $('attendanceTableData').innerHTML=html;
+      
+      const pages=Math.ceil(data.length/perPage);
+      let p='<div class="pagination">';
+      for(let i=1;i<=Math.min(pages,10);i++) p+=`<button class="page-btn ${i===attendancePage?'active':''}" onclick="attendancePage=${i};applyAttendanceFilters();">${i}</button>`;
+      p+='</div>';
+      $('attendancePagination').innerHTML=p;
+    }
+    
+    function clearAttendanceFilters(){ filterState.attendance={status:'all'}; $('attendanceSearch').value=''; applyAttendanceFilters(); toast('🔄 Filters reset'); }
+
+    function exportAttendanceCSV(){
+      let mergedData = mergeAttendanceRecords(attendance);
+      if(!mergedData.length) return toast('⚠️ No attendance records for today');
+      
+      let csv='Date,Name,Department,RFID UID,Clock In,Clock Out,Status\n';
+      mergedData.forEach(r=>{
+        csv+=`"${r.date||getTodayDate()}","${(r.name||'').replace(/"/g,'""')}","${(r.department||'').replace(/"/g,'""')}","${r.uid}","${r.clockIn||'--'}","${r.clockOut||'--'}","${r.status||'PENDING'}"\n`;
+      });
+      downloadCSV(csv,'sibao_attendance_today.csv');
+    }
+
+    // RECORDS
+    function applyRecordsFilters(){
+      let mergedData = mergeAttendanceRecords(records);
+      let data = [...mergedData];
+      
+      const q=$('recordsSearch').value.toLowerCase();
+      if(q) data=data.filter(r=>(r.name||'').toLowerCase().includes(q)||(r.uid||'').toLowerCase().includes(q));
+      
+      if(filterState.records.startDate) {
+        data=data.filter(r=>{
+          if(!r.date) return false;
+          return r.date >= filterState.records.startDate;
+        });
+      }
+      if(filterState.records.endDate) {
+        data=data.filter(r=>{
+          if(!r.date) return false;
+          return r.date <= filterState.records.endDate;
+        });
+      }
+      if(filterState.records.status!=='all') data=data.filter(r=>r.status===filterState.records.status);
+      
+      data.sort((a,b) => {
+        if(!a.date) return 1;
+        if(!b.date) return -1;
+        return b.date.localeCompare(a.date);
+      });
+      
+      $('recordsCountDisplay').textContent=data.length+' records';
+      renderRecordsStats(data);
+      renderRecordsTable(data);
+    }
+    
+    function renderRecordsStats(data){
+      const total=data.length;
+      const late=data.filter(r=>r.status==='LATE').length;
+      const early=data.filter(r=>r.status==='EARLY').length;
+      const uniqueTeachers = new Set(data.map(r=>r.uid)).size;
+      
+      $('recordsStats').innerHTML=`
+        <div class="stat-card"><div class="stat-label">TOTAL HISTORY</div><div class="stat-value">${total}</div></div>
+        <div class="stat-card"><div class="stat-label">LATE</div><div class="stat-value warning">${late}</div></div>
+        <div class="stat-card"><div class="stat-label">EARLY</div><div class="stat-value" style="color:var(--green);">${early}</div></div>
+        <div class="stat-card"><div class="stat-label">UNIQUE TEACHERS</div><div class="stat-value">${uniqueTeachers}</div></div>
+      `;
+    }
+    
+    function renderRecordsTable(data){
+      const start=(recordsPage-1)*perPage, end=start+perPage, page=data.slice(start,end);
+      if(!page.length){
+        $('recordsTableData').innerHTML=`<div class="no-data"><i class="fas fa-history"></i><p>No records found.</p></div>`;
+        $('recordsPagination').innerHTML=''; return;
+      }
+      
+      let html=`<table><thead><tr><th>#</th><th>PHOTO</th><th>DATE</th><th>NAME</th><th>RFID</th><th>CLOCK IN</th><th>CLOCK OUT</th><th>STATUS</th></tr></thead><tbody>`;
+      
+      page.forEach((r, index)=>{
+        const num = start + index + 1;
+        const photo=getUserPhoto(r.uid);
+        const photoHtml=photo?`<img class="profile-img-in-table" src="${photo}" alt="Photo">` : `<div class="profile-img-in-table-placeholder"><i class="fas fa-user"></i></div>`;
+        
+        let bClass='badge-muted';
+        if(r.status==='ON TIME'||r.status==='EARLY') bClass='badge-success';
+        if(r.status==='LATE') bClass='badge-warning';
+        if(r.status==='NO SCHEDULE') bClass='badge-schedule';
+        
+        html+=`<tr>
+          <td>${num}</td>
+          <td>${photoHtml}</td>
+          <td>${r.date || '--'}</td>
+          <td><strong>${r.name||'Teacher'}</strong></td>
+          <td><code style="font-size:11px;">${r.uid}</code></td>
+          <td><span style="font-weight:600;color:var(--green);">${r.clockIn}</span></td>
+          <td><span style="font-weight:600;color:var(--danger);">${r.clockOut}</span></td>
+          <td><span class="badge ${bClass}">${r.status||'PENDING'}</span></td>
+        </tr>`;
+      });
+      
+      html+='</tbody></table>';
+      $('recordsTableData').innerHTML=html;
+      
+      const pages=Math.ceil(data.length/perPage);
+      let p='<div class="pagination">';
+      for(let i=1;i<=Math.min(pages,10);i++) p+=`<button class="page-btn ${i===recordsPage?'active':''}" onclick="recordsPage=${i};applyRecordsFilters();">${i}</button>`;
+      p+='</div>';
+      $('recordsPagination').innerHTML=p;
+    }
+    
+    function clearRecordsFilters(){ filterState.records={startDate:'',endDate:'',status:'all'}; $('recordsSearch').value=''; applyRecordsFilters(); toast('🔄 Filters cleared'); }
+    
+    function exportRecordsCSV(){
+      let mergedData = mergeAttendanceRecords(records);
+      if(!mergedData.length) return toast('⚠️ No records');
+      
+      let csv='Date,Name,Department,RFID UID,Clock In,Clock Out,Status\n';
+      mergedData.forEach(r=>{
+        csv+=`"${r.date||'--'}","${(r.name||'').replace(/"/g,'""')}","${(r.department||'').replace(/"/g,'""')}","${r.uid}","${r.clockIn||'--'}","${r.clockOut||'--'}","${r.status||'PENDING'}"\n`;
+      });
+      downloadCSV(csv,'sibao_attendance_history.csv');
+    }
+
+    // SCHEDULE
+    function applyScheduleFilters(){
+      let data=[...schedule];
+      const q=$('scheduleSearch').value.toLowerCase();
+      if(q) data=data.filter(s=>(s.day||'').toLowerCase().includes(q));
+      if(filterState.schedule.day!=='all') data=data.filter(s=>s.day===filterState.schedule.day);
+      $('scheduleCountDisplay').textContent=data.length+' entries';
+      renderScheduleStats(data); renderScheduleGrid(data); renderScheduleTable(data);
+    }
+    function renderScheduleStats(data){
+      const todayDay=getTodayDayName();
+      let todayEntry=data.find(d=>d.day===todayDay);
+      if(!todayEntry && data.length) todayEntry=data[0];
+      const shiftStart=todayEntry?(todayEntry.clockIn==='NO SCHEDULE'?'--':todayEntry.clockIn):'--';
+      const shiftEnd=todayEntry?(todayEntry.clockOut==='NO SCHEDULE'?'--':todayEntry.clockOut):'--';
+      const grace=todayEntry?(todayEntry.clockIn==='NO SCHEDULE'?'--':todayEntry.latenessThreshold):'--';
+      $('scheduleStats').innerHTML=`<div class="stat-card"><div class="stat-label">Today's Status</div><div class="stat-value success">${shiftStart}</div></div><div class="stat-card"><div class="stat-label">End Time</div><div class="stat-value" style="color:var(--green);">${shiftEnd}</div></div><div class="stat-card"><div class="stat-label">Grace Period</div><div class="stat-value warning">${grace} ${grace!=='--'?'mins':''}</div></div><div class="stat-card"><div class="stat-label">Tracked Days</div><div class="stat-value">${data.length}</div></div>`;
+    }
+    function renderScheduleGrid(data){
+      const days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+      let html='';
+      days.forEach(day=>{
+        const item=data.find(d=>d.day===day);
+        const isAdd=!item;
+        const isNoSchedule=item && (item.clockIn==='NO SCHEDULE'||item.clockIn==='--'||!item.clockIn);
+        html+=`<div class="schedule-card"><div class="day-header"><span>${day}</span><button class="edit-schedule-btn ${isAdd?'add-btn':''}" onclick="openEditScheduleModal('${day}')"><i class="fas ${isAdd?'fa-plus':'fa-pencil-alt'}"></i></button></div>`;
+        if(item && !isNoSchedule){
+          html+=`<div class="schedule-item"><span class="label">Start</span><span class="value">${item.clockIn}</span></div>
+                 <div class="schedule-item"><span class="label">End</span><span class="value">${item.clockOut}</span></div>
+                 <div class="schedule-item"><span class="label">Grace</span><span class="value">${item.latenessThreshold} mins</span></div>`;
+        } else {
+          html+=`<div style="text-align:center;padding:14px 0;color:var(--text-muted);font-size:13px;font-style:italic;"><i class="fas fa-bed"></i> Off Day</div>`;
+        }
+        html+=`</div>`;
+      });
+      $('scheduleGridData').innerHTML=html;
+    }
+    function renderScheduleTable(data){
+      if(!data.length){ $('scheduleTableData').innerHTML=''; return; }
+      const todayDay=getTodayDayName();
+      let html=`<table><thead><tr><th>Weekday</th><th>Clock In Deadline</th><th>Shift Closing</th><th>Lateness Grace</th></tr></thead><tbody>`;
+      data.forEach(s=>{
+        const isToday=s.day===todayDay? 'class="today-highlight"':'';
+        html+=`<tr ${isToday}><td><strong>${s.day}</strong> ${s.day===todayDay?'<span class="badge badge-success">Today</span>':''}</td><td><span style="color:var(--green);font-weight:600;">${s.clockIn}</span></td><td><span style="color:var(--danger);font-weight:600;">${s.clockOut}</span></td><td><code>${s.latenessThreshold} minutes</code></td></tr>`;
+      });
+      html+='</tbody></table>'; $('scheduleTableData').innerHTML=html;
+    }
+
+    function openEditScheduleModal(day){
+      const item=schedule.find(d=>d.day===day);
+      const isOff = item && item.clockIn === 'NO SCHEDULE';
+      
+      const currentIn = item && item.clockIn && item.clockIn !== 'NO SCHEDULE' ? item.clockIn.split(':').slice(0, 2).join(':') : '07:00';
+      const currentOut = item && item.clockOut && item.clockOut !== 'NO SCHEDULE' ? item.clockOut.split(':').slice(0, 2).join(':') : '15:15';
+      const threshold = item ? (item.latenessThreshold || 0) : 40;
+
+      const content = $('editScheduleModalContent');
+      content.innerHTML = `
+        <div style="font-weight:700;margin-bottom:12px;color:var(--green); font-size:16px;"><i class="fas fa-calendar-day"></i> Setup Schedule for ${day}</div>
+        <div class="filter-group">
+          <label>Day Status</label>
+          <select id="editScheduleStatus">
+            <option value="active" ${!isOff?'selected':''}>Working Day (Shift Active)</option>
+            <option value="no_schedule" ${isOff?'selected':''}>Off Day (No logs captured)</option>
+          </select>
+        </div>
+        <div id="scheduleTimeGroup1" class="filter-group" style="display:${isOff?'none':'block'};">
+          <label>Clock-In Shift Start Time</label>
+          <input type="time" id="editClockIn" value="${currentIn}">
+        </div>
+        <div id="scheduleTimeGroup2" class="filter-group" style="display:${isOff?'none':'block'};">
+          <label>Clock-Out Shift End Time</label>
+          <input type="time" id="editClockOut" value="${currentOut}">
+        </div>
+        <div id="scheduleTimeGroup3" class="filter-group" style="display:${isOff?'none':'block'};">
+          <label>Lateness Threshold (Grace Period Minutes)</label>
+          <input type="number" id="editThreshold" placeholder="e.g. 40" value="${threshold}">
+        </div>
+        <div class="filter-actions">
+          <button class="btn" onclick="closeEditScheduleModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="saveSchedule('${day}')">Save Settings</button>
+        </div>
+      `;
+
+      document.getElementById('editScheduleStatus').addEventListener('change', function(){
+        const isNo = this.value === 'no_schedule';
+        document.getElementById('scheduleTimeGroup1').style.display = isNo ? 'none' : 'block';
+        document.getElementById('scheduleTimeGroup2').style.display = isNo ? 'none' : 'block';
+        document.getElementById('scheduleTimeGroup3').style.display = isNo ? 'none' : 'block';
+      });
+
+      $('editScheduleModal').classList.add('show');
+    }
+    
+    function closeEditScheduleModal(){ $('editScheduleModal').classList.remove('show'); }
+    
+    function saveSchedule(day){
+      const status=document.getElementById('editScheduleStatus').value;
+      if(status==='no_schedule'){
+        const obj={day, clockIn:'NO SCHEDULE', clockOut:'NO SCHEDULE', latenessThreshold:0};
+        showLoading(true);
+        db.ref('schedule').orderByChild('day').equalTo(day).once('value').then(snap=>{
+          const key=snap.val()?Object.keys(snap.val())[0]:null;
+          if(key) return db.ref('schedule/'+key).update(obj);
+          return db.ref('schedule').push(obj);
+        }).then(()=>{
+          closeEditScheduleModal(); showLoading(false); toast('✅ Schedule set to OFF DAY');
+        }).catch(e=>{ showLoading(false); toast('❌ '+e.message); });
+      } else {
+        let clockIn=document.getElementById('editClockIn').value;
+        let clockOut=document.getElementById('editClockOut').value;
+        const threshold=parseInt(document.getElementById('editThreshold').value);
+        if(!clockIn||!clockOut||isNaN(threshold)) return toast('⚠️ Please fill all fields');
+        
+        if (clockIn.split(':').length > 2) clockIn = clockIn.split(':').slice(0, 2).join(':');
+        if (clockOut.split(':').length > 2) clockOut = clockOut.split(':').slice(0, 2).join(':');
+
+        const obj={day, clockIn:clockIn+':00', clockOut:clockOut+':00', latenessThreshold:threshold};
+        showLoading(true);
+        db.ref('schedule').orderByChild('day').equalTo(day).once('value').then(snap=>{
+          const key=snap.val()?Object.keys(snap.val())[0]:null;
+          if(key) return db.ref('schedule/'+key).update(obj);
+          return db.ref('schedule').push(obj);
+        }).then(()=>{
+          closeEditScheduleModal(); showLoading(false); toast('✅ Schedule saved successfully');
+        }).catch(e=>{ showLoading(false); toast('❌ '+e.message); });
+      }
+    }
+
+    let hooksLoaded=0;
+    function checkInitComplete() { hooksLoaded++; if(hooksLoaded>=4){ showLoading(false); } }
+
+    function startLiveSync() {
+      if (!mainApp.classList.contains('visible')) return;
+      
+      showLoading(true);
+      $('topbarDateDisplay').textContent = getTodayDate();
+      $('todayDateDisplay').textContent = getTodayDate();
+
+      db.ref('teachers').on('value', snap=>{
+        users=[];
+        if(snap.val()) {
+          Object.entries(snap.val()).forEach(([key,val])=>{ users.push({key, ...val}); });
+        }
+        $('userBadge').textContent=users.length;
+        $('totalTeachersHome').textContent=users.length;
+        if(currentTab==='users') applyUserFilters();
+        updateHomeStats(); checkInitComplete();
+      }, ()=>{ users=[]; checkInitComplete(); });
+
+      db.ref('attendance').on('value', snap=>{
+        attendance=[];
+        if(snap.val()) {
+          const today = getTodayDate();
+          Object.values(snap.val()).forEach(a=>{
+            if(a.timestamp) {
+              const recordDate = a.timestamp.split(' ')[0];
+              if(recordDate === today) {
+                attendance.push(a);
+              }
+            }
+          });
+        }
+        let mergedData = mergeAttendanceRecords(attendance);
+        $('attendanceBadge').textContent = mergedData.length;
+        if(currentTab==='attendance') applyAttendanceFilters();
+        updateHomeStats(); checkInitComplete();
+      }, ()=>{ attendance=[]; checkInitComplete(); });
+
+      db.ref('attendance').on('value', snap=>{
+        records=[];
+        if(snap.val()) {
+          Object.values(snap.val()).forEach(r=>{ 
+            records.push(r); 
+          });
+        }
+        
+        let mergedRecords = mergeAttendanceRecords(records);
+        $('recordsBadge').textContent = mergedRecords.length;
+        
+        if(currentTab==='records') applyRecordsFilters();
+        updateHomeStats(); checkInitComplete();
+      }, ()=>{ records=[]; checkInitComplete(); });
+
+      db.ref('schedule').on('value', snap=>{
+        if(snap.val()){ 
+          schedule=Object.values(snap.val());
+          let configuredDays = schedule.filter(s => s.clockIn !== 'NO SCHEDULE' && s.clockIn !== '--' && s.clockIn);
+          $('scheduleBadge').textContent = configuredDays.length;
+        }
+        else {
+          schedule=[
+            {day:'Monday',clockIn:'07:00:00',clockOut:'15:15:00',latenessThreshold:40},
+            {day:'Tuesday',clockIn:'07:00:00',clockOut:'15:15:00',latenessThreshold:40},
+            {day:'Wednesday',clockIn:'07:00:00',clockOut:'15:15:00',latenessThreshold:40},
+            {day:'Thursday',clockIn:'07:00:00',clockOut:'15:15:00',latenessThreshold:40},
+            {day:'Friday',clockIn:'07:00:00',clockOut:'14:00:00',latenessThreshold:40}
+          ];
+          schedule.forEach(item=>db.ref('schedule').push(item));
+          $('scheduleBadge').textContent = schedule.length;
+        }
+        if(currentTab==='schedule') applyScheduleFilters();
+        updateHomeStats(); checkInitComplete();
+      }, ()=>{ schedule=[]; checkInitComplete(); });
+    }
+
+    function updateHomeStats(){
+      const mergedToday = mergeAttendanceRecords(attendance);
+      const present = mergedToday.filter(a=>a.clockIn !== '--').length;
+      const late = mergedToday.filter(a=>a.status==='LATE').length;
+      $('totalTodayHome').textContent = present;
+      $('totalLateHome').textContent = late;
+      let configuredDays = schedule.filter(s => s.clockIn !== 'NO SCHEDULE' && s.clockIn !== '--' && s.clockIn);
+      $('totalDaysHome').textContent = configuredDays.length;
+    }
+
+    function refreshData(){ toast('🔄 Syncing...'); hooksLoaded=0; startLiveSync(); }
+
+    // Make functions globally accessible
+    window.toggleSidebar = toggleSidebar;
+    window.closeSidebar = closeSidebar;
+    window.switchTab = switchTab;
+    window.handleFileUpload = handleFileUpload;
+    window.removeNewUserPhoto = removeNewUserPhoto;
+    window.removeEditUserPhoto = removeEditUserPhoto;
+    window.openFilterModal = openFilterModal;
+    window.closeFilterModal = closeFilterModal;
+    window.applyFiltersFromModal = applyFiltersFromModal;
+    window.applyUserFilters = applyUserFilters;
+    window.clearUserFilters = clearUserFilters;
+    window.openAddUserModal = openAddUserModal;
+    window.closeAddUserModal = closeAddUserModal;
+    window.addUser = addUser;
+    window.openEditUserModal = openEditUserModal;
+    window.closeEditUserModal = closeEditUserModal;
+    window.updateUser = updateUser;
+    window.removeUser = removeUser;
+    window.exportUsersCSV = exportUsersCSV;
+    window.applyAttendanceFilters = applyAttendanceFilters;
+    window.clearAttendanceFilters = clearAttendanceFilters;
+    window.exportAttendanceCSV = exportAttendanceCSV;
+    window.applyRecordsFilters = applyRecordsFilters;
+    window.clearRecordsFilters = clearRecordsFilters;
+    window.exportRecordsCSV = exportRecordsCSV;
+    window.applyScheduleFilters = applyScheduleFilters;
+    window.openEditScheduleModal = openEditScheduleModal;
+    window.closeEditScheduleModal = closeEditScheduleModal;
+    window.saveSchedule = saveSchedule;
+    window.refreshData = refreshData;
+    window.logout = logout;
+    window.startLiveSync = startLiveSync;
+  </script>
+</body>
+</html>
