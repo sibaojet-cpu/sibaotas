@@ -995,13 +995,13 @@
         return false;
       }
 
-      showAlert('🔍 Verifying credentials...', false);
+      showAlert(' Verifying credentials...', false);
 
       db.ref('admins').orderByChild('uid').equalTo(adminId).once('value')
         .then((snapshot) => {
           const data = snapshot.val();
           if (!data) {
-            showAlert('❌ Admin ID not found. Please check and try again.');
+            showAlert(' Admin ID not found. Please check and try again.');
             return;
           }
 
@@ -1016,7 +1016,7 @@
           }
 
           if (found && adminData) {
-            showAlert('✅ Welcome ' + adminData.name + '!', true);
+            showAlert('Welcome ' + adminData.name + '!', true);
             
             sessionStorage.setItem('sibao_admin_id', adminId);
             sessionStorage.setItem('sibao_admin_name', adminData.name || 'Administrator');
@@ -1030,12 +1030,12 @@
               setTimeout(startLiveSync, 200);
             }, 800);
           } else {
-            showAlert('❌ Incorrect password. Please try again.');
+            showAlert(' Incorrect password. Please try again.');
           }
         })
         .catch((error) => {
           console.error('Login error:', error);
-          showAlert('⚠️ Database error: ' + error.message);
+          showAlert('Database error: ' + error.message);
         });
 
       return false;
@@ -1258,12 +1258,12 @@
             if($('editUserProfilePlaceholder')) $('editUserProfilePlaceholder').style.display='none';
             $('removeEditPhotoBtn').style.display='inline-flex';
           }
-          toast('✅ Photo uploaded');
-        } else toast('❌ Upload failed');
+          toast(' Photo uploaded');
+        } else toast('  Upload failed');
         input.value='';
       }).catch(e=>{
         showLoading(false);
-        toast('❌ Upload failed');
+        toast('  Upload failed');
         input.value='';
       });
     }
@@ -1273,14 +1273,14 @@
       $('newUserProfilePreview').style.display='none';
       $('newUserProfilePlaceholder').style.display='flex';
       $('removeNewPhotoBtn').style.display='none';
-      toast('🔄 Photo removed');
+      toast('  Photo removed');
     }
     function removeEditUserPhoto(){
       $('editUserProfileUrl').value='';
       $('editUserProfilePreview').style.display='none';
       $('editUserProfilePlaceholder').style.display='flex';
       $('removeEditPhotoBtn').style.display='none';
-      toast('🔄 Photo removed');
+      toast('  Photo removed');
     }
 
     function downloadCSV(csv,name){
@@ -1296,7 +1296,7 @@
         setTimeout(()=>{
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
-          toast('✅ Download started');
+          toast(' Download started');
         },100);
       },100);
     }
@@ -1412,28 +1412,28 @@
     function closeEditUserModal(){ $('editUserModal').classList.remove('show'); }
     function updateUser(){
       const key=$('editUserKey').value, name=$('editUserName').value.trim(), dept=$('editUserDept').value, email=$('editUserEmail').value.trim()||'N/A', status=$('editUserStatus').value, photo=$('editUserProfileUrl').value||null;
-      if(!name) return toast('⚠️ Name is required');
+      if(!name) return toast('Name is required');
       showLoading(true);
       db.ref('teachers/'+key).update({name,department:dept,email,status,profilePhoto:photo}).then(()=>{
-        closeEditUserModal(); showLoading(false); toast('✅ Teacher updated');
-      }).catch(e=>{ showLoading(false); toast('❌ '+e.message); });
+        closeEditUserModal(); showLoading(false); toast('Teacher updated');
+      }).catch(e=>{ showLoading(false); toast(+e.message); });
     }
-    function clearUserFilters(){ filterState.users={dept:'all',status:'all'}; $('userSearch').value=''; applyUserFilters(); toast('🔄 Filters reset'); }
-    function openAddUserModal(){ if(users.length>=MAX_TEACHERS) return toast(`⚠️ Maximum ${MAX_TEACHERS} teachers`); $('addUserModal').classList.add('show'); $('newUserName').value=''; $('newUserUID').value=''; $('newUserEmail').value=''; $('newUserProfileUrl').value=''; $('newUserProfilePreview').style.display='none'; $('newUserProfilePlaceholder').style.display='flex'; $('removeNewPhotoBtn').style.display='none'; }
+    function clearUserFilters(){ filterState.users={dept:'all',status:'all'}; $('userSearch').value=''; applyUserFilters(); toast('Filters reset'); }
+    function openAddUserModal(){ if(users.length>=MAX_TEACHERS) return toast(` Maximum ${MAX_TEACHERS} teachers`); $('addUserModal').classList.add('show'); $('newUserName').value=''; $('newUserUID').value=''; $('newUserEmail').value=''; $('newUserProfileUrl').value=''; $('newUserProfilePreview').style.display='none'; $('newUserProfilePlaceholder').style.display='flex'; $('removeNewPhotoBtn').style.display='none'; }
     function closeAddUserModal(){ $('addUserModal').classList.remove('show'); }
     function addUser(){
-      if(users.length>=MAX_TEACHERS) return toast(`⚠️ Maximum ${MAX_TEACHERS} teachers`);
+      if(users.length>=MAX_TEACHERS) return toast(` Maximum ${MAX_TEACHERS} teachers`);
       const name=$('newUserName').value.trim(), uid=$('newUserUID').value.trim().toUpperCase().replace(/[^A-F0-9]/g,''), dept=$('newUserDept').value, email=$('newUserEmail').value.trim()||'N/A', profilePhoto=$('newUserProfileUrl').value||null;
-      if(!name||!uid) return toast('⚠️ Name and RFID UID required');
-      if(users.some(t=>t.uid===uid)) return toast('⚠️ UID already registered');
+      if(!name||!uid) return toast(' Name and RFID UID required');
+      if(users.some(t=>t.uid===uid)) return toast('UID already registered');
       const obj={name,uid,department:dept,email,status:'Active',profilePhoto,createdAt:new Date().toISOString()};
       showLoading(true);
-      db.ref('teachers').push(obj).then(()=>{ closeAddUserModal(); showLoading(false); toast('✅ Teacher added'); }).catch(e=>{ showLoading(false); toast('❌ '+e.message); });
+      db.ref('teachers').push(obj).then(()=>{ closeAddUserModal(); showLoading(false); toast('Teacher added'); }).catch(e=>{ showLoading(false); toast(e.message); });
     }
-    function removeUser(key){ if(!confirm('Delete this teacher?')) return; db.ref('teachers/'+key).remove().then(()=>toast('🗑️ Teacher removed')).catch(e=>toast('❌ '+e.message)); }
+    function removeUser(key){ if(!confirm('Delete this teacher?')) return; db.ref('teachers/'+key).remove().then(()=>toast('Teacher removed')).catch(e=>toast(e.message)); }
     
     function exportUsersCSV(){
-      if(!users.length) return toast('⚠️ No teachers');
+      if(!users.length) return toast('No teachers');
       let csv='Name,RFID UID,Department,Email,Status\n';
       users.forEach(t=>{ csv+=`"${(t.name||'').replace(/"/g,'""')}","${t.uid}","${(t.department||'').replace(/"/g,'""')}","${(t.email||'').replace(/"/g,'""')}","${(t.status||'').replace(/"/g,'""')}"\n`; });
       downloadCSV(csv,'sibao_teachers_export.csv');
@@ -1512,7 +1512,7 @@
 
     function exportAttendanceCSV(){
       let mergedData = mergeAttendanceRecords(attendance);
-      if(!mergedData.length) return toast('⚠️ No attendance records for today');
+      if(!mergedData.length) return toast('No attendance records for today');
       
       let csv='Date,Name,Department,RFID UID,Clock In,Clock Out,Status\n';
       mergedData.forEach(r=>{
@@ -1613,7 +1613,7 @@
     
     function exportRecordsCSV(){
       let mergedData = mergeAttendanceRecords(records);
-      if(!mergedData.length) return toast('⚠️ No records');
+      if(!mergedData.length) return toast('No records');
       
       let csv='Date,Name,Department,RFID UID,Clock In,Clock Out,Status\n';
       mergedData.forEach(r=>{
@@ -1728,13 +1728,13 @@
           if(key) return db.ref('schedule/'+key).update(obj);
           return db.ref('schedule').push(obj);
         }).then(()=>{
-          closeEditScheduleModal(); showLoading(false); toast('✅ Schedule set to OFF DAY');
-        }).catch(e=>{ showLoading(false); toast('❌ '+e.message); });
+          closeEditScheduleModal(); showLoading(false); toast('Schedule set to OFF DAY');
+        }).catch(e=>{ showLoading(false); toast(e.message); });
       } else {
         let clockIn=document.getElementById('editClockIn').value;
         let clockOut=document.getElementById('editClockOut').value;
         const threshold=parseInt(document.getElementById('editThreshold').value);
-        if(!clockIn||!clockOut||isNaN(threshold)) return toast('⚠️ Please fill all fields');
+        if(!clockIn||!clockOut||isNaN(threshold)) return toast('Please fill all fields');
         
         if (clockIn.split(':').length > 2) clockIn = clockIn.split(':').slice(0, 2).join(':');
         if (clockOut.split(':').length > 2) clockOut = clockOut.split(':').slice(0, 2).join(':');
@@ -1746,8 +1746,8 @@
           if(key) return db.ref('schedule/'+key).update(obj);
           return db.ref('schedule').push(obj);
         }).then(()=>{
-          closeEditScheduleModal(); showLoading(false); toast('✅ Schedule saved successfully');
-        }).catch(e=>{ showLoading(false); toast('❌ '+e.message); });
+          closeEditScheduleModal(); showLoading(false); toast('Schedule saved successfully');
+        }).catch(e=>{ showLoading(false); toast(e.message); });
       }
     }
 
@@ -1838,7 +1838,7 @@
       $('totalDaysHome').textContent = configuredDays.length;
     }
 
-    function refreshData(){ toast('🔄 Syncing...'); hooksLoaded=0; startLiveSync(); }
+    function refreshData(){ toast('Syncing...'); hooksLoaded=0; startLiveSync(); }
 
     // Make functions globally accessible
     window.toggleSidebar = toggleSidebar;
