@@ -1660,7 +1660,7 @@
       $('recordsPagination').innerHTML=p;
     }
     
-    function clearRecordsFilters(){ filterState.records={startDate:'',endDate:'',status:'all'}; $('recordsSearch').value=''; applyRecordsFilters(); toast('🔄 Filters cleared'); }
+    function clearRecordsFilters(){ filterState.records={startDate:'',endDate:'',status:'all'}; $('recordsSearch').value=''; applyRecordsFilters(); toast(' Filters cleared'); }
     
     function exportRecordsCSV(){
       let mergedData = mergeAttendanceRecords(records);
