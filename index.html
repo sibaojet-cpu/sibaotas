@@ -281,7 +281,7 @@
     .home-hero { background:var(--card); border-radius:var(--radius); padding:28px 24px; text-align:center; border:1px solid var(--border); box-shadow:var(--shadow); margin-bottom:16px; position:relative; overflow:hidden; }
     .home-hero::before { content:''; position:absolute; top:-50%; right:-50%; width:100%; height:100%; background:radial-gradient(circle, rgba(46,125,50,0.05) 0%, transparent 70%); border-radius:50%; }
     .home-hero > * { position:relative; z-index:1; }
-    .home-logo { width:80px; height:80px; border-radius:50%; margin:0 auto 12px; overflow:hidden; }
+    .home-logo { width:100px; height:100px; border-radius:50%; margin:0 auto 12px; overflow:hidden; }
     .home-logo img { width:100%; height:100%; object-fit:cover; }
     .home-hero h2 { font-size:28px; font-weight:700; color:var(--text); margin-bottom:6px; }
     .home-hero h2 span { color:var(--green); }
@@ -1559,7 +1559,7 @@
       $('attendancePagination').innerHTML=p;
     }
     
-    function clearAttendanceFilters(){ filterState.attendance={status:'all'}; $('attendanceSearch').value=''; applyAttendanceFilters(); toast('🔄 Filters reset'); }
+    function clearAttendanceFilters(){ filterState.attendance={status:'all'}; $('attendanceSearch').value=''; applyAttendanceFilters(); toast(' Filters reset'); }
 
     function exportAttendanceCSV(){
       let mergedData = mergeAttendanceRecords(attendance);
@@ -1713,7 +1713,7 @@
     function renderScheduleTable(data){
       if(!data.length){ $('scheduleTableData').innerHTML=''; return; }
       const todayDay=getTodayDayName();
-      let html=`<table><thead><tr><th>Weekday</th><th>Clock In Deadline</th><th>Shift Closing</th><th>Lateness Grace</th></tr></thead><tbody>`;
+      let html=`<table><thead><tr><th>Weekdays</th><th>Clock In Time</th><th>Clock Out time</th><th>Lateness Grace</th></tr></thead><tbody>`;
       data.forEach(s=>{
         const isToday=s.day===todayDay? 'class="today-highlight"':'';
         html+=`<tr ${isToday}><td><strong>${s.day}</strong> ${s.day===todayDay?'<span class="badge badge-success">Today</span>':''}</td><td><span style="color:var(--green);font-weight:600;">${s.clockIn}</span></td><td><span style="color:var(--danger);font-weight:600;">${s.clockOut}</span></td><td><code>${s.latenessThreshold} minutes</code></td></tr>`;
