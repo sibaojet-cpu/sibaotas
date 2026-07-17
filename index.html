@@ -138,6 +138,10 @@
       margin-top: 6px;
       position:relative; z-index:1;
     }
+    .btn-login:hover {
+      color: rgb(60, 255, 0);
+      background-color: #2e7d32;
+    }
     .btn-login:active { transform:scale(0.97); background:#1b5e20; }
     .btn-login i { font-size:18px; }
     .login-footer {
@@ -491,6 +495,29 @@
       font-weight:900; 
     }
 
+     .whatsapp-float { position:fixed; bottom:60px; right:20px; z-index:998; display:flex; flex-direction:column; align-items:center; gap:4px; }
+    .whatsapp-float .wa-btn { display:flex; align-items:center; justify-content:center; width:56px; height:56px; background:#25D366; color:white; border-radius:50%; border:none; cursor:pointer; box-shadow:0 4px 20px rgba(37,211,102,0.3); transition:all 0.3s ease; font-size:28px; animation:pulse-wa 2s infinite; touch-action:manipulation; }
+    .whatsapp-float .wa-btn:active { transform:scale(0.92); }
+    .whatsapp-float .wa-label { font-size:9px; background:var(--text); color:white; padding:2px 10px; border-radius:10px; white-space:nowrap; font-weight:600; opacity:0.8; }
+    @keyframes pulse-wa { 0%,100%{box-shadow:0 4px 20px rgba(37,211,102,0.3);} 50%{box-shadow:0 4px 30px rgba(37,211,102,0.5);} }
+    .wa-chat-popup { position:fixed; bottom:120px; right:20px; width:300px; max-width:calc(100vw - 40px); background:var(--card); border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,0.15); border:1px solid var(--border); z-index:999; display:none; overflow:hidden; animation:slideUp 0.3s ease; }
+    .wa-chat-popup.show { display:block; }
+    @keyframes slideUp { from{opacity:0;transform:translateY(16px) scale(0.95);} to{opacity:1;transform:translateY(0) scale(1);} }
+    .wa-chat-header { background:#075E54; color:white; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; }
+    .wa-chat-header .wa-title { display:flex; align-items:center; gap:10px; font-weight:600; font-size:14px; }
+    .wa-chat-header .wa-title .wa-avatar { width:30px; height:30px; border-radius:50%; background:#128C7E; display:flex; align-items:center; justify-content:center; font-size:15px; overflow:hidden; }
+    .wa-chat-header .wa-title .wa-avatar img { width:100%; height:100%; object-fit:cover; }
+    .wa-chat-header .wa-close { background:none; border:none; color:white; font-size:20px; cursor:pointer; padding:0 4px; opacity:0.7; }
+    .wa-chat-body { padding:12px; background:#ECE5DD; min-height:70px; }
+    .wa-chat-body .wa-message { background:white; padding:8px 12px; border-radius:8px 8px 8px 0; max-width:90%; font-size:14px; color:var(--text); box-shadow:0 1px 2px rgba(0,0,0,0.06); margin-bottom:4px; }
+    .wa-chat-body .wa-message .wa-time { font-size:9px; color:var(--text-muted); margin-top:2px; display:block; text-align:right; }
+    .wa-chat-footer { display:flex; padding:8px 10px; background:var(--card); border-top:1px solid var(--border); gap:6px; }
+    .wa-chat-footer input { flex:1; border:1px solid var(--border); border-radius:20px; padding:6px 14px; font-size:14px !important; outline:none; background:var(--bg); color:var(--text); height:36px; }
+    .wa-chat-footer input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(46,125,50,0.1); }
+    .wa-chat-footer button { background:#25D366; color:white; border:none; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; transition:0.2s; flex-shrink:0; }
+    .wa-chat-footer button:active { transform:scale(0.92); }
+
+
     .sidebar-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.3); z-index:140; }
     .sidebar-overlay.show { display:block; }
 
@@ -680,6 +707,11 @@
       </div>
     </div>
   </div>
+
+  <div class="whatsapp-float">
+      <button class="wa-btn" onclick="window.open('https://chat.whatsapp.com/CGvgIOleKN8GaeatPlohkO?s=cl&p=a&ilr=4', '_blank')" aria-label="WhatsApp Group"><i class="fab fa-whatsapp"></i></button>
+      <span class="wa-label">Join Group</span>
+    </div>
 
   <!-- ========== MAIN APP ========== -->
   <div id="mainApp">
@@ -1154,14 +1186,33 @@
     function mergeAttendanceRecords(data) {
       const merged = {};
       
-      data.forEach(record => {
+      // 1. Sort records chronologically so older taps are processed first
+      const sortedData = [...data].sort((a, b) => {
+        return (a.timestamp || '').localeCompare(b.timestamp || '');
+      });
+      
+      // Track the absolute last known status of each user across days
+      const userLastAction = {}; 
+
+      sortedData.forEach(record => {
         if (!record.timestamp) return;
         const parts = record.timestamp.split(' ');
         if (parts.length < 2) return;
+        
         const date = parts[0];
         const time = parts[1];
         const key = `${record.uid}_${date}`;
         
+        let action = record.action;
+
+        // 2. SMART CROSS-DAY CORRECTION
+        // If the database says OUT, but there is no IN record yet FOR THIS SPECIFIC DAY, 
+        // it means they forgot to clock out on a previous day. Force it to be an 'IN' for today!
+        if (action === 'OUT' && (!merged[key] || merged[key].clockIn === '--')) {
+          action = 'IN';
+        }
+
+        // Initialize the daily object if it doesn't exist
         if (!merged[key]) {
           merged[key] = {
             uid: record.uid,
@@ -1175,7 +1226,8 @@
           };
         }
         
-        if (record.action === 'IN') {
+        // 3. Assign the times based on corrected action
+        if (action === 'IN') {
           merged[key].clockIn = time;
           const newStatus = determineStatusFromSchedule(time, date);
           if (newStatus !== null) {
@@ -1183,7 +1235,7 @@
           } else {
             merged[key].status = record.status || 'PENDING';
           }
-        } else if (record.action === 'OUT') {
+        } else if (action === 'OUT') {
           merged[key].clockOut = time;
           if (merged[key].clockIn !== '--' && merged[key].status === 'PENDING') {
             const newStatus = determineStatusFromSchedule(merged[key].clockIn, date);
@@ -1196,7 +1248,6 @@
       
       return Object.values(merged);
     }
-
     let filterState = {
       users:{dept:'all',status:'all'},
       attendance:{status:'all'},
