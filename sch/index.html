@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>SIBAO TAS · Fingerprint</title>
+  <link rel="icon" type="image/png" href="https://res.cloudinary.com/t3tg9lfb/image/upload/v1783515403/1000374024_11zon-256x256_ivfvnp.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- ===== LOGIN PAGE ===== -->
+  <div class="login-page" id="loginPage">
+    <div class="login-wrapper">
+      <div class="login-card">
+        <div class="login-header">
+          <div class="brand-icon">
+            <img src="https://res.cloudinary.com/t3tg9lfb/image/upload/v1783515403/1000374024_11zon-256x256_ivfvnp.png" alt="SIBAO" />
+          </div>
+          <h2>SIBAO <span>TAS</span></h2>
+          <p>Teacher Attendance · Fingerprint Integrated</p>
+        </div>
+        <div class="login-alert" id="loginAlert">
+          <i class="fas fa-exclamation-circle"></i>
+          <span id="alertMessage">Invalid credentials</span>
+        </div>
+        <form id="loginForm" onsubmit="return handleLogin(event)">
+          <div class="input-group">
+            <label><i class="fas fa-id-badge"></i> Admin ID</label>
+            <div class="input-wrap">
+              <i class="fas fa-user-shield"></i>
+              <input type="text" id="loginId" placeholder="Enter Admin ID" />
+            </div>
+          </div>
+          <div class="input-group">
+            <label><i class="fas fa-lock"></i> Password</label>
+            <div class="input-wrap">
+              <i class="fas fa-key"></i>
+              <input type="password" id="loginPassword" placeholder="Enter Password" />
+            </div>
+          </div>
+          <button type="submit" class="btn-login"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+        </form>
+        <div class="login-footer">
+          <div class="powered"><i class="fas fa-bolt"></i> Powered By <strong>SIBAOJET</strong></div>
+          <div class="sub">SIBAO TAS v1.0 · Fingerprint Authentication</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="whatsapp-float">
+    <button class="wa-btn" onclick="window.open('https://chat.whatsapp.com/CGvgIOleKN8GaeatPlohkO?s=cl&p=a&ilr=4', '_blank')" aria-label="WhatsApp Group"><i class="fab fa-whatsapp"></i></button>
+    <span class="wa-label">Join Group</span>
+  </div>
+
+  <div id="mainApp">
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+    <div class="app-container">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <div class="brand-icon"><img src="https://res.cloudinary.com/t3tg9lfb/image/upload/v1783515403/1000374024_11zon-256x256_ivfvnp.png" alt="SIBAO Logo"></div>
+          <div class="brand-text">
+            <h1>SIBAO <small>TAS</small></h1>
+            <div class="sibao-tagline"><span>Faith</span> <span>·</span> <span>Knowledge</span> <span>·</span> <span>Service</span></div>
+            <span>founded 1999</span>
+          </div>
+        </div>
+        <nav class="sidebar-nav">
+          <div class="nav-label">Main</div>
+          <a href="#" class="active" data-tab="home" onclick="switchTab('home')"><i class="fas fa-home"></i> Home</a>
+          <a href="#" data-tab="users" onclick="switchTab('users')"><i class="fas fa-id-card"></i> Teachers <span class="badge" id="userBadge">0</span></a>
+          <a href="#" data-tab="attendance" onclick="switchTab('attendance')"><i class="fas fa-clipboard-list"></i> Attendance <span class="badge" id="attendanceBadge">0</span></a>
+          <a href="#" data-tab="records" onclick="switchTab('records')"><i class="fas fa-history"></i> Records <span class="badge" id="recordsBadge">0</span></a>
+          <a href="#" data-tab="schedule" onclick="switchTab('schedule')"><i class="fas fa-calendar-alt"></i> Schedule <span class="badge" id="scheduleBadge">0</span></a>
+          <div style="margin-top:auto;border-top:1px solid var(--border);padding-top:12px;">
+            <a href="#" onclick="logout()" style="color:var(--danger);"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </div>
+        </nav>
+        <div class="sidebar-footer"><span class="status-dot"></span> Realtime Active</div>
+      </aside>
+
+      <main class="main-content">
+        <!-- ===== FIXED HEADER ===== -->
+        <header class="topbar">
+          <div class="topbar-left">
+            <button class="hamburger" onclick="toggleSidebar()" aria-label="Toggle Navigation Sidebar"><i class="fas fa-bars"></i></button>
+            <h2 class="page-title" id="mainPageTitle">Home</h2>
+          </div>
+          <div class="topbar-right">
+            <div class="date-badge"><i class="far fa-calendar-alt"></i> <span id="topbarDateDisplay">Loading...</span></div>
+            <button class="btn-icon" onclick="refreshData()" title="Refresh and sync data"><i class="fas fa-sync-alt"></i></button>
+            <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+          </div>
+        </header>
+
+        <!-- ===== HOME TAB ===== -->
+        <div class="tab-content active" id="tab-home">
+          <div class="home-container">
+            <div class="home-hero">
+              <div class="home-logo"><img src="https://res.cloudinary.com/t3tg9lfb/image/upload/v1783515403/1000374024_11zon-256x256_ivfvnp.png" alt="SIBAO Logo"></div>
+              <h2>Welcome to <span>SIBAO TAS</span></h2>
+              <p>Smart Teacher Attendance System with fully integrated Fingerprint technology.</p>
+              <div class="home-actions">
+                <button class="btn btn-primary" onclick="switchTab('attendance')"><i class="fas fa-clipboard-list"></i> View Today's Attendance</button>
+                <button class="btn" onclick="switchTab('users')"><i class="fas fa-user-plus"></i> Manage Teachers</button>
+              </div>
+            </div>
+            <div class="home-features">
+              <div class="feature-card"><div class="feature-icon"><i class="fas fa-fingerprint fingerprint-icon" style="font-size:30px;color:#2e7d32;"></i></div><h4>Fingerprint Scanner</h4><p>Instant logs sync via biometric scanning.</p></div>
+              <div class="feature-card"><div class="feature-icon"><i class="fas fa-clock" style="font-size:30px;color:#2e7d32;"></i></div><h4>Realtime Sync</h4><p>Instant tracking dashboard live logs.</p></div>
+              <div class="feature-card"><div class="feature-icon"><i class="fas fa-file-excel" style="font-size:30px;color:#2e7d32;"></i></div><h4>Excel Reports</h4><p>One-click clean CSV downloads.</p></div>
+              <div class="feature-card"><div class="feature-icon"><i class="fas fa-calendar-alt" style="font-size:30px;color:#2e7d32;"></i></div><h4>Shift Control</h4><p>Configure custom shifts dynamically.</p></div>
+            </div>
+            <div class="home-stats">
+              <div class="stat-box"><div class="number" id="totalTeachersHome">0</div><div class="label">Total Teachers</div></div>
+              <div class="stat-box"><div class="number" id="totalTodayHome">0</div><div class="label">Present Today</div></div>
+              <div class="stat-box"><div class="number" id="totalLateHome">0</div><div class="label">Late Today</div></div>
+              <div class="stat-box"><div class="number" id="totalDaysHome">0</div><div class="label">Schedule Days</div></div>
+            </div>
+            <div class="home-info">
+              <div class="about-container">
+                <div class="about-content">
+                  <div class="about-title"><i class="fas fa-info-circle" style="color:var(--green);"></i> About SIBAO TAS</div>
+                  <div class="about-grid">
+                    <div class="about-item"><div class="icon-box"><i class="fas fa-bullseye"></i></div><div class="info"><h4>Purpose</h4><p>Streamline teachers attendance tracking using biometric fingerprints</p></div></div>
+                    <div class="about-item"><div class="icon-box"><i class="fas fa-code"></i></div><div class="info"><h4>Technology</h4><p>Built with Firebase, Cloudinary, and modern web technologies</p></div></div>
+                    <div class="about-item"><div class="icon-box"><i class="fas fa-star"></i></div><div class="info"><h4>Features</h4><p>Real-time updates, smart status detection, CSV export</p></div></div>
+                    <div class="about-item"><div class="icon-box"><i class="fas fa-shield-alt"></i></div><div class="info"><h4>Security</h4><p>Biometric verification with Firebase security rules</p></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== USERS TAB ===== -->
+        <div class="tab-content" id="tab-users">
+          <div class="search-bar">
+            <div class="search-row">
+              <div class="search-input-wrap"><i class="fas fa-search"></i><input type="text" id="userSearch" placeholder="Search teachers..." oninput="applyUserFilters()"></div>
+              <span class="record-count" id="userCountDisplay">0 teachers</span>
+            </div>
+            <div class="btn-group">
+              <button class="btn" onclick="openFilterModal('users')"><i class="fas fa-sliders-h"></i> Filters</button>
+              <button class="btn" onclick="clearUserFilters()"><i class="fas fa-times"></i> Clear</button>
+              <button class="btn btn-primary" onclick="openAddUserModal()"><i class="fas fa-plus"></i> Add</button>
+            </div>
+          </div>
+          <div class="pending-fingerprint-notification" id="pendingFingerprintNotification">
+            <div><span class="status-text"><i class="fas fa-fingerprint fingerprint-icon"></i> Fingerprint Detected:</span><span class="fp-display" id="pendingFingerprintDisplay">----------</span></div>
+            <div><span class="timer-badge" id="pendingFingerprintTimer">10s</span><button class="btn btn-sm btn-primary" onclick="autoFillFingerprintID()" style="margin-left:8px;"><i class="fas fa-arrow-right"></i> Use</button></div>
+          </div>
+          <div class="stats-grid" id="userStats"></div>
+          <div class="table-container">
+            <div class="table-header"><h3><i class="fas fa-id-badge" style="color:var(--green);"></i> Registered Teachers</h3><button class="btn btn-sm btn-primary" onclick="exportUsersCSV()"><i class="fas fa-file-csv"></i> Export</button></div>
+            <div class="table-scroll"><div id="userTableData"></div></div>
+            <div id="userPagination"></div>
+          </div>
+        </div>
+
+        <!-- ===== ATTENDANCE TAB ===== -->
+        <div class="tab-content" id="tab-attendance">
+          <div class="search-bar">
+            <div class="search-row">
+              <div class="search-input-wrap"><i class="fas fa-search"></i><input type="text" id="attendanceSearch" placeholder="Search attendance..." oninput="applyAttendanceFilters()"></div>
+              <span class="record-count" id="attendanceCountDisplay">0 records</span>
+            </div>
+            <div class="btn-group">
+              <button class="btn" onclick="openFilterModal('attendance')"><i class="fas fa-sliders-h"></i> Filters</button>
+              <button class="btn" onclick="clearAttendanceFilters()"><i class="fas fa-times"></i> Clear</button>
+            </div>
+          </div>
+          <div class="stats-grid" id="attendanceStats"></div>
+          <div class="table-container">
+            <div class="table-header">
+              <h3><i class="fas fa-clock" style="color:var(--green);"></i> Today's Attendance</h3>
+              <div class="header-right"><span class="date-display" id="todayDateDisplay"></span><button class="btn btn-sm btn-primary" onclick="exportAttendanceCSV()"><i class="fas fa-file-csv"></i> Export</button></div>
+            </div>
+            <div class="table-scroll"><div id="attendanceTableData"></div></div>
+            <div id="attendancePagination"></div>
+          </div>
+        </div>
+
+        <!-- ===== RECORDS TAB ===== -->
+        <div class="tab-content" id="tab-records">
+          <div class="search-bar">
+            <div class="search-row">
+              <div class="search-input-wrap"><i class="fas fa-search"></i><input type="text" id="recordsSearch" placeholder="Search records..." oninput="applyRecordsFilters()"></div>
+              <span class="record-count" id="recordsCountDisplay">0 records</span>
+            </div>
+            <div class="btn-group">
+              <button class="btn" onclick="openFilterModal('records')"><i class="fas fa-sliders-h"></i> Filters</button>
+              <button class="btn" onclick="clearRecordsFilters()"><i class="fas fa-times"></i> Clear</button>
+            </div>
+          </div>
+          <div class="stats-grid" id="recordsStats"></div>
+          <div class="table-container">
+            <div class="table-header"><h3><i class="fas fa-history" style="color:var(--green);"></i> Attendance History</h3><button class="btn btn-sm btn-primary" onclick="exportRecordsCSV()"><i class="fas fa-file-csv"></i> Export</button></div>
+            <div class="table-scroll"><div id="recordsTableData"></div></div>
+            <div id="recordsPagination"></div>
+          </div>
+        </div>
+
+        <!-- ===== SCHEDULE TAB ===== -->
+        <div class="tab-content" id="tab-schedule">
+          <div class="search-bar">
+            <div class="search-row">
+              <div class="search-input-wrap"><i class="fas fa-search"></i><input type="text" id="scheduleSearch" placeholder="Search day..." oninput="applyScheduleFilters()"></div>
+              <span class="record-count" id="scheduleCountDisplay">0 entries</span>
+            </div>
+            <div class="btn-group">
+              <button class="btn" onclick="openFilterModal('schedule')"><i class="fas fa-sliders-h"></i> Filters</button>
+              <button class="btn" onclick="applyScheduleFilters()"><i class="fas fa-times"></i> Clear</button>
+            </div>
+          </div>
+          <div class="schedule-grid" id="scheduleStats"></div>
+          <div class="table-container">
+            <div class="table-header"><h3><i class="fas fa-calendar-alt" style="color:var(--green);"></i> Configured Shift Settings</h3></div>
+            <div class="schedule-grid" id="scheduleGridData" style="padding:16px;"></div>
+            <div class="table-scroll"><div id="scheduleTableData"></div></div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div class="watermark">Powered by <strong>SIBAO TAS Fingerprint Terminal v1.0</strong></div>
+
+    <!-- ===== MODALS ===== -->
+    <div class="modal-overlay" id="filterModal"><div class="modal"><div class="modal-header"><h2>Filters</h2><button class="close-btn" onclick="closeFilterModal()">&times;</button></div><div id="filterContent"></div></div></div>
+    
+    <div class="modal-overlay" id="addUserModal"><div class="modal"><div class="modal-header"><h2><i class="fas fa-user-plus" style="color:var(--green);"></i> New Teacher</h2><button class="close-btn" onclick="closeAddUserModal()">&times;</button></div>
+      <div class="filter-group"><label>Full Name</label><input type="text" id="newUserName" placeholder="e.g. Teacher"></div>
+      <div class="filter-group"><label>Fingerprint ID</label><input type="text" id="newUserFingerprint" placeholder="e.g. FP-001"><button class="btn btn-sm btn-primary" onclick="autoFillFingerprintID()" style="margin-top:6px;width:100%;justify-content:center;"><i class="fas fa-fingerprint"></i> Auto-fill from Scanner</button></div>
+      <div class="filter-group"><label>Department</label><select id="newUserDept"><option>Science</option><option>Arts</option><option>Commercial</option></select></div>
+      <div class="filter-group"><label>Email</label><input type="email" id="newUserEmail" placeholder="e.g. user@gmail.com"></div>
+      <div class="filter-group"><label>Profile Picture</label>
+        <div class="profile-upload-container">
+          <img id="newUserProfilePreview" class="profile-preview" src="" alt="Profile" style="display:none;">
+          <div id="newUserProfilePlaceholder" class="profile-preview-placeholder"><i class="fas fa-user"></i></div>
+          <div class="profile-upload-actions">
+            <input type="file" id="newUserFileInput" class="file-input-hidden" accept="image/*" onchange="handleFileUpload('new', this)">
+            <button class="btn btn-primary" onclick="document.getElementById('newUserFileInput').click()"><i class="fas fa-cloud-upload-alt"></i> Upload</button>
+            <button class="btn" onclick="removeNewUserPhoto()" id="removeNewPhotoBtn" style="display:none;"><i class="fas fa-times"></i> Remove</button>
+          </div>
+        </div>
+        <input type="hidden" id="newUserProfileUrl" value="">
+      </div>
+      <div class="filter-actions"><button class="btn" onclick="closeAddUserModal()">Cancel</button><button class="btn btn-primary" onclick="addUser()"><i class="fas fa-check"></i> Save Teacher</button></div>
+    </div></div>
+
+    <div class="modal-overlay" id="editUserModal"><div class="modal"><div class="modal-header"><h2><i class="fas fa-user-edit" style="color:#ff9800;"></i> Edit Teacher</h2><button class="close-btn" onclick="closeEditUserModal()">&times;</button></div>
+      <input type="hidden" id="editUserKey">
+      <div class="filter-group"><label>Full Name</label><input type="text" id="editUserName"></div>
+      <div class="filter-group"><label>Fingerprint ID (Immutable)</label><input type="text" id="editUserFingerprint" readonly style="opacity:0.6;"></div>
+      <div class="filter-group"><label>Department</label><select id="editUserDept"><option>Science</option><option>Arts</option><option>Commercial</option></select></div>
+      <div class="filter-group"><label>Email</label><input type="email" id="editUserEmail"></div>
+      <div class="filter-group"><label>Status</label><select id="editUserStatus"><option>Active</option><option>Inactive</option></select></div>
+      <div class="filter-group"><label>Profile Picture</label>
+        <div class="profile-upload-container">
+          <img id="editUserProfilePreview" class="profile-preview" src="" alt="Profile" style="display:none;">
+          <div id="editUserProfilePlaceholder" class="profile-preview-placeholder"><i class="fas fa-user"></i></div>
+          <div class="profile-upload-actions">
+            <input type="file" id="editUserFileInput" class="file-input-hidden" accept="image/*" onchange="handleFileUpload('edit', this)">
+            <button class="btn btn-primary" onclick="document.getElementById('editUserFileInput').click()"><i class="fas fa-cloud-upload-alt"></i> Change</button>
+            <button class="btn" onclick="removeEditUserPhoto()" id="removeEditPhotoBtn" style="display:none;"><i class="fas fa-times"></i> Remove</button>
+          </div>
+        </div>
+        <input type="hidden" id="editUserProfileUrl" value="">
+      </div>
+      <div class="filter-actions"><button class="btn" onclick="closeEditUserModal()">Cancel</button><button class="btn btn-warning" style="color:white;" onclick="updateUser()"><i class="fas fa-save"></i> Save Changes</button></div>
+    </div></div>
+
+    <div class="modal-overlay" id="editScheduleModal"><div class="modal"><div class="modal-header"><h2><i class="fas fa-calendar-edit" style="color:var(--green);"></i> Adjust Shift Schedule</h2><button class="close-btn" onclick="closeEditScheduleModal()">&times;</button></div><div id="editScheduleModalContent"></div></div></div>
+
+    <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div><p>Synchronizing Biometric Realtime Data...</p></div>
+  </div>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  <script src="config.js"></script>
+  <script src="utils.js"></script>
+  <script src="auth.js"></script>
+  <script src="users.js"></script>
+  <script src="attendance.js"></script>
+  <script src="records.js"></script>
+  <script src="schedule.js"></script>
+  <script src="fingerprint.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
