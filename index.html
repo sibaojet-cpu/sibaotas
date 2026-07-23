@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>SIBAO TAS · RFID</title>
+  <title>SIBAO TAS · Fingerprint</title>
   <link rel="icon" type="image/png" href="https://res.cloudinary.com/t3tg9lfb/image/upload/v1783515403/1000374024_11zon-256x256_ivfvnp.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -251,31 +251,78 @@
     @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.5;transform:scale(0.9);} }
 
     .main-content { 
-      flex:1; padding:20px 24px 80px; min-height:100vh; width:100%; 
-      overflow-x:hidden; background:var(--bg);
+      flex:1; 
+      padding:80px 24px 40px; 
+      min-height:100vh; 
+      width:100%; 
+      overflow-x:hidden; 
+      background:var(--bg);
       margin-left:240px;
     }
 
+    /* ===== FIXED STICKY HEADER ===== */
     .topbar { 
-      display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:12px; 
-      padding:8px 0; 
-      position:sticky; top:0; background:var(--bg); z-index:10; 
+      display:flex; 
+      justify-content:space-between; 
+      align-items:center; 
+      padding:12px 24px;
+      background:var(--bg);
+      border-bottom:2px solid var(--border);
+      position:fixed;
+      top:0;
+      left:240px;
+      right:0;
+      z-index:50;
+      height:64px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.04);
     }
-    .topbar-left { display:flex; align-items:center; gap:12px; }
-    .hamburger { display:none; background:var(--card); border:1px solid var(--border); color:var(--text); font-size:20px; padding:6px 10px; border-radius:10px; cursor:pointer; transition:0.2s; touch-action:manipulation; box-shadow:var(--shadow); }
+    .topbar-left { display:flex; align-items:center; gap:14px; }
+    .hamburger { display:none; background:var(--card); border:1px solid var(--border); color:var(--text); font-size:20px; padding:6px 12px; border-radius:10px; cursor:pointer; transition:0.2s; touch-action:manipulation; box-shadow:var(--shadow); }
     .hamburger:active { transform:scale(0.92); }
     .page-title { font-size:24px; font-weight:700; color:var(--text); }
-    .topbar-right { display:flex; align-items:center; gap:8px; }
-    .date-badge { background:var(--card); padding:6px 14px; border-radius:30px; font-size:13px; color:var(--text-secondary); border:1px solid var(--border); display:flex; align-items:center; gap:6px; box-shadow:var(--shadow); }
-    .date-badge i { font-size:13px; }
-    .btn-icon { background:var(--card); border:1px solid var(--border); color:var(--text-secondary); width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:0.2s; font-size:15px; box-shadow:var(--shadow); }
+    .topbar-right { display:flex; align-items:center; gap:10px; }
+    .date-badge { background:var(--card); padding:8px 18px; border-radius:30px; font-size:14px; color:var(--text-secondary); border:1px solid var(--border); display:flex; align-items:center; gap:8px; box-shadow:var(--shadow); font-weight:500; }
+    .date-badge i { font-size:14px; }
+    .btn-icon { background:var(--card); border:1px solid var(--border); color:var(--text-secondary); width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:0.2s; font-size:16px; box-shadow:var(--shadow); }
     .btn-icon:active { transform:scale(0.92); }
-    .logout-btn { background:var(--danger); color:white; border:none; padding:6px 16px; border-radius:30px; font-weight:600; font-size:13px; cursor:pointer; transition:0.2s; }
+    .logout-btn { background:var(--danger); color:white; border:none; padding:8px 20px; border-radius:30px; font-weight:600; font-size:14px; cursor:pointer; transition:0.2s; }
     .logout-btn:active { transform:scale(0.95); }
 
-    .tab-content { display:none !important; animation:fadeUp 0.3s ease; }
+    .tab-content { display:none !important; animation:fadeUp 0.3s ease; padding-top:8px; }
     .tab-content.active { display:block !important; }
     @keyframes fadeUp { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }
+
+    /* ===== INCREASED ACTION BUTTONS ===== */
+    .action-btns {
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .action-btns .btn {
+      padding:0 18px;
+      height:36px;
+      font-size:13px;
+      font-weight:600;
+    }
+    .action-btns .btn i {
+      font-size:14px;
+    }
+    .btn-edit {
+      background:#fff3e0;
+      color:#e65100;
+      border:1px solid #ffe0b2;
+    }
+    .btn-edit:hover {
+      background:#ffe0b2;
+    }
+    .btn-delete {
+      background:#ffebee;
+      color:#c62828;
+      border:1px solid #ffcdd2;
+    }
+    .btn-delete:hover {
+      background:#ffcdd2;
+    }
 
     .home-container { max-width:100%; margin:0 auto; }
     .home-hero { background:var(--card); border-radius:var(--radius); padding:28px 24px; text-align:center; border:1px solid var(--border); box-shadow:var(--shadow); margin-bottom:16px; position:relative; overflow:hidden; }
@@ -377,9 +424,15 @@
     }
 
     .search-bar { 
-      background:var(--card); border-radius:var(--radius); padding:14px 18px; margin-bottom:16px; 
-      border:1px solid var(--border); display:flex; flex-direction:column; gap:10px; box-shadow:var(--shadow);
-      position:sticky; top:70px; z-index:9; 
+      background:var(--card); 
+      border-radius:var(--radius); 
+      padding:14px 18px; 
+      margin-bottom:16px; 
+      border:1px solid var(--border); 
+      display:flex; 
+      flex-direction:column; 
+      gap:10px; 
+      box-shadow:var(--shadow);
     }
     .search-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
     .search-input-wrap { flex:1; display:flex; align-items:center; gap:10px; background:var(--bg); border-radius:30px; padding:0 16px; border:1px solid var(--border); transition:0.2s; min-width:140px; height:44px; }
@@ -396,11 +449,22 @@
     .btn-danger { background:var(--danger); color:white; border:none; }
     .btn-warning { background:var(--warning); color:white; border:none; }
     .btn-sm { height:32px; font-size:12px; padding:0 12px; }
-    .btn-xs { height:26px; font-size:10px; padding:0 8px; }
+    .btn-xs { height:28px; font-size:12px; padding:0 14px; }
     .record-count { color:var(--text-muted); font-size:13px; padding:0 4px; font-weight:500; }
 
-    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:16px; }
-    .stat-card { background:var(--card); border-radius:var(--radius); padding:14px 16px; border:1px solid var(--border); box-shadow:var(--shadow); }
+    .stats-grid { 
+      display:grid; 
+      grid-template-columns:repeat(4,1fr); 
+      gap:14px; 
+      margin-bottom:16px; 
+    }
+    .stat-card { 
+      background:var(--card); 
+      border-radius:var(--radius); 
+      padding:14px 16px; 
+      border:1px solid var(--border); 
+      box-shadow:var(--shadow); 
+    }
     .stat-label { font-size:11px; text-transform:uppercase; letter-spacing:0.3px; color:var(--text-muted); font-weight:600; }
     .stat-value { font-size:24px; font-weight:700; margin-top:2px; color:var(--text); }
     .stat-value.success { color:var(--success); }
@@ -495,32 +559,16 @@
       font-weight:900; 
     }
 
-     .whatsapp-float { position:fixed; bottom:60px; right:20px; z-index:998; display:flex; flex-direction:column; align-items:center; gap:4px; }
+    .whatsapp-float { position:fixed; bottom:60px; right:20px; z-index:998; display:flex; flex-direction:column; align-items:center; gap:4px; }
     .whatsapp-float .wa-btn { display:flex; align-items:center; justify-content:center; width:56px; height:56px; background:#25D366; color:white; border-radius:50%; border:none; cursor:pointer; box-shadow:0 4px 20px rgba(37,211,102,0.3); transition:all 0.3s ease; font-size:28px; animation:pulse-wa 2s infinite; touch-action:manipulation; }
     .whatsapp-float .wa-btn:active { transform:scale(0.92); }
     .whatsapp-float .wa-label { font-size:9px; background:var(--text); color:white; padding:2px 10px; border-radius:10px; white-space:nowrap; font-weight:600; opacity:0.8; }
     @keyframes pulse-wa { 0%,100%{box-shadow:0 4px 20px rgba(37,211,102,0.3);} 50%{box-shadow:0 4px 30px rgba(37,211,102,0.5);} }
-    .wa-chat-popup { position:fixed; bottom:120px; right:20px; width:300px; max-width:calc(100vw - 40px); background:var(--card); border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,0.15); border:1px solid var(--border); z-index:999; display:none; overflow:hidden; animation:slideUp 0.3s ease; }
-    .wa-chat-popup.show { display:block; }
-    @keyframes slideUp { from{opacity:0;transform:translateY(16px) scale(0.95);} to{opacity:1;transform:translateY(0) scale(1);} }
-    .wa-chat-header { background:#075E54; color:white; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; }
-    .wa-chat-header .wa-title { display:flex; align-items:center; gap:10px; font-weight:600; font-size:14px; }
-    .wa-chat-header .wa-title .wa-avatar { width:30px; height:30px; border-radius:50%; background:#128C7E; display:flex; align-items:center; justify-content:center; font-size:15px; overflow:hidden; }
-    .wa-chat-header .wa-title .wa-avatar img { width:100%; height:100%; object-fit:cover; }
-    .wa-chat-header .wa-close { background:none; border:none; color:white; font-size:20px; cursor:pointer; padding:0 4px; opacity:0.7; }
-    .wa-chat-body { padding:12px; background:#ECE5DD; min-height:70px; }
-    .wa-chat-body .wa-message { background:white; padding:8px 12px; border-radius:8px 8px 8px 0; max-width:90%; font-size:14px; color:var(--text); box-shadow:0 1px 2px rgba(0,0,0,0.06); margin-bottom:4px; }
-    .wa-chat-body .wa-message .wa-time { font-size:9px; color:var(--text-muted); margin-top:2px; display:block; text-align:right; }
-    .wa-chat-footer { display:flex; padding:8px 10px; background:var(--card); border-top:1px solid var(--border); gap:6px; }
-    .wa-chat-footer input { flex:1; border:1px solid var(--border); border-radius:20px; padding:6px 14px; font-size:14px !important; outline:none; background:var(--bg); color:var(--text); height:36px; }
-    .wa-chat-footer input:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(46,125,50,0.1); }
-    .wa-chat-footer button { background:#25D366; color:white; border:none; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; transition:0.2s; flex-shrink:0; }
-    .wa-chat-footer button:active { transform:scale(0.92); }
-
 
     .sidebar-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.3); z-index:140; }
     .sidebar-overlay.show { display:block; }
 
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 820px) {
       .app-container { flex-direction:column; }
       .sidebar { 
@@ -532,96 +580,75 @@
       .sidebar.open { transform:translateX(0); }
       .sidebar-overlay.show { display:block; }
       .hamburger { display:block; }
-
-      .main-content { 
-        padding:12px 12px 80px; width:100%; 
-        margin-left:0;
-      }
+      .main-content { padding:70px 12px 40px; width:100%; margin-left:0; }
       .topbar { 
-        margin-bottom:14px; position:sticky; top:0; background:var(--bg); z-index:10; 
-        padding-top:6px; padding-bottom:6px;
+        left:0; 
+        padding:10px 16px; 
+        height:60px;
       }
-      .page-title { font-size:20px; }
-      .date-badge { font-size:11px; padding:4px 10px; }
+      .page-title { font-size:18px; }
+      .date-badge { font-size:11px; padding:4px 12px; }
       .date-badge i { font-size:11px; }
-      .btn-icon { width:32px; height:32px; font-size:13px; }
-
+      .btn-icon { width:34px; height:34px; font-size:13px; }
+      .logout-btn { font-size:12px; padding:6px 14px; }
       .home-hero { padding:20px 16px; }
       .home-hero h2 { font-size:22px; }
       .home-hero p { font-size:14px; }
       .home-logo { width:60px; height:60px; }
-
       .home-features { grid-template-columns:repeat(2,1fr); gap:10px; }
       .feature-card { padding:12px 10px; }
       .feature-card .feature-icon { width:44px; height:44px; }
       .feature-card .feature-icon img { width:24px; height:24px; }
       .feature-card h4 { font-size:13px; }
       .feature-card p { font-size:11px; }
-
       .home-stats { grid-template-columns:repeat(2,1fr); gap:10px; }
       .stat-box .number { font-size:24px; }
       .stat-box .label { font-size:11px; }
-
-      .about-container {
-        flex-direction:column;
-        gap:16px;
-      }
-      .about-grid {
-        grid-template-columns:1fr 1fr;
-        gap:12px;
-      }
-      .about-item {
-        padding:12px 14px;
-      }
-      .about-item .icon-box {
-        width:36px;
-        height:36px;
-        min-width:36px;
-        font-size:16px;
-      }
-      .about-item .info h4 {
-        font-size:13px;
-      }
-      .about-item .info p {
-        font-size:12px;
-      }
-
+      .about-container { flex-direction:column; gap:16px; }
+      .about-grid { grid-template-columns:1fr 1fr; gap:12px; }
+      .about-item { padding:12px 14px; }
+      .about-item .icon-box { width:36px; height:36px; min-width:36px; font-size:16px; }
+      .about-item .info h4 { font-size:13px; }
+      .about-item .info p { font-size:12px; }
       .stats-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
       .stat-card { padding:12px; }
       .stat-value { font-size:20px; }
-
       .schedule-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
       .schedule-card { padding:12px; }
-
-      .search-bar { padding:12px; position:sticky; top:60px; z-index:9; }
+      .search-bar { padding:12px; }
       .search-row { flex-direction:column; gap:6px; }
       .search-input-wrap { width:100%; min-width:unset; height:38px; }
       .search-input-wrap input { font-size:15px !important; }
       .btn-group { width:100%; justify-content:flex-start; }
       .btn { height:32px; font-size:12px; padding:0 12px; }
-
       .table-scroll { padding:0 2px; }
       table { font-size:13px; min-width:500px; }
       th, td { padding:6px 8px; }
-
       .modal { padding:16px; max-width:100%; margin:10px; }
       .profile-preview { width:52px; height:52px; }
       .profile-preview-placeholder { width:52px; height:52px; font-size:20px; }
       .profile-upload-actions .btn { height:26px; font-size:10px; min-width:64px; }
-      
       .watermark { left:50%; transform:translateX(-50%); }
+      .action-btns .btn {
+        height:30px;
+        font-size:11px;
+        padding:0 12px;
+      }
     }
 
     @media (max-width: 480px) {
-      .main-content { padding:8px 8px 70px; }
+      .main-content { padding:62px 8px 40px; }
+      .topbar { padding:8px 12px; height:54px; }
+      .page-title { font-size:16px; }
+      .date-badge { font-size:10px; padding:3px 8px; }
+      .date-badge i { font-size:10px; }
+      .btn-icon { width:30px; height:30px; font-size:12px; }
+      .logout-btn { font-size:11px; padding:4px 10px; }
       .home-features { grid-template-columns:1fr 1fr; gap:6px; }
       .home-stats { grid-template-columns:1fr 1fr; gap:6px; }
       .stats-grid { grid-template-columns:1fr 1fr; gap:6px; }
       .schedule-grid { grid-template-columns:1fr 1fr; gap:6px; }
-      .about-grid {
-        grid-template-columns:1fr;
-        gap:10px;
-      }
+      .about-grid { grid-template-columns:1fr; gap:10px; }
       .stat-card { padding:8px 10px; }
       .stat-value { font-size:18px; }
       .stat-label { font-size:9px; }
@@ -629,17 +656,21 @@
       .search-input-wrap input { font-size:14px !important; }
       .btn { height:28px; font-size:11px; padding:0 10px; }
       .btn-sm { height:24px; font-size:10px; padding:0 8px; }
-      .btn-xs { height:20px; font-size:9px; padding:0 6px; }
+      .btn-xs { height:24px; font-size:11px; padding:0 10px; }
       .table-header h3 { font-size:13px; }
-      .page-title { font-size:18px; }
       .modal { padding:14px 12px; }
       .profile-preview { width:44px; height:44px; }
       .profile-preview-placeholder { width:44px; height:44px; font-size:18px; }
       .sidebar { width:260px; padding:12px; }
       .watermark { font-size:10px; bottom:4px; }
-      .date-badge { font-size:9px; padding:2px 6px; }
-      .date-badge i { font-size:9px; }
-      .btn-icon { width:28px; height:28px; font-size:11px; }
+      .action-btns .btn {
+        height:26px;
+        font-size:10px;
+        padding:0 10px;
+      }
+      .action-btns .btn i {
+        font-size:11px;
+      }
     }
 
     @media (max-width: 380px) {
@@ -655,15 +686,37 @@
       .hamburger { display:none !important; }
       .sidebar-overlay { display:none !important; }
       .sidebar { transform:translateX(0) !important; position:fixed; top:0; left:0; bottom:0; height:100vh; overflow-y:auto; }
-      .main-content { margin-left:240px; }
+      .main-content { margin-left:240px; padding-top:80px; }
     }
-    html, body {
-      touch-action: pan-x pan-y;
+    html, body { touch-action: pan-x pan-y; }
+
+    .pending-fingerprint-notification {
+      background: #e3f2fd;
+      border: 2px solid #2196f3;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      animation: pulse-blue 1.5s ease-in-out infinite;
+    }
+    .pending-fingerprint-notification.show { display: flex; }
+    .pending-fingerprint-notification .fp-display { font-weight: 700; color: #0d47a1; font-size: 14px; letter-spacing: 0.5px; }
+    .pending-fingerprint-notification .timer-badge { background: #2196f3; color: white; padding: 2px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .pending-fingerprint-notification .status-text { color: #0d47a1; font-size: 13px; font-weight: 500; }
+    @keyframes pulse-blue {
+      0%, 100% { border-color: #2196f3; background: #e3f2fd; }
+      50% { border-color: #1976d2; background: #bbdefb; }
+    }
+    .fingerprint-icon { animation: fp-pulse 1.5s ease-in-out infinite; }
+    @keyframes fp-pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.15); opacity: 0.8; }
     }
   </style>
 </head>
 <body>
-  <!-- ========== LOGIN PAGE ========== -->
   <div class="login-page" id="loginPage">
     <div class="login-wrapper">
       <div class="login-card">
@@ -672,14 +725,12 @@
             <img src="https://res.cloudinary.com/t3tg9lfb/image/upload/v1783515403/1000374024_11zon-256x256_ivfvnp.png" alt="SIBAO" />
           </div>
           <h2>SIBAO <span>TAS</span></h2>
-          <p>Teacher Attendance · RFID Integrated</p>
+          <p>Teacher Attendance · Fingerprint Integrated</p>
         </div>
-
         <div class="login-alert" id="loginAlert">
           <i class="fas fa-exclamation-circle"></i>
           <span id="alertMessage">Invalid credentials</span>
         </div>
-
         <form id="loginForm" onsubmit="return handleLogin(event)">
           <div class="input-group">
             <label><i class="fas fa-id-badge"></i> Admin ID</label>
@@ -697,26 +748,21 @@
           </div>
           <button type="submit" class="btn-login"><i class="fas fa-sign-in-alt"></i> Sign In</button>
         </form>
-
         <div class="login-footer">
-          <div class="powered">
-            <i class="fas fa-bolt"></i> Powered By <strong>SIBAOJET</strong>
-          </div>
-          <div class="sub">SIBAO TAS v2.0 · Secure Database Auth</div>
+          <div class="powered"><i class="fas fa-bolt"></i> Powered By <strong>SIBAOJET</strong></div>
+          <div class="sub">SIBAO TAS v1.0 · Fingerprint Authentication</div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="whatsapp-float">
-      <button class="wa-btn" onclick="window.open('https://chat.whatsapp.com/CGvgIOleKN8GaeatPlohkO?s=cl&p=a&ilr=4', '_blank')" aria-label="WhatsApp Group"><i class="fab fa-whatsapp"></i></button>
-      <span class="wa-label">Join Group</span>
-    </div>
+    <button class="wa-btn" onclick="window.open('https://chat.whatsapp.com/CGvgIOleKN8GaeatPlohkO?s=cl&p=a&ilr=4', '_blank')" aria-label="WhatsApp Group"><i class="fab fa-whatsapp"></i></button>
+    <span class="wa-label">Join Group</span>
+  </div>
 
-  <!-- ========== MAIN APP ========== -->
   <div id="mainApp">
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-
     <div class="app-container">
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
@@ -738,12 +784,11 @@
             <a href="#" onclick="logout()" style="color:var(--danger);"><i class="fas fa-sign-out-alt"></i> Logout</a>
           </div>
         </nav>
-        <div class="sidebar-footer">
-          <span class="status-dot"></span> Realtime Active
-        </div>
+        <div class="sidebar-footer"><span class="status-dot"></span> Realtime Active</div>
       </aside>
 
       <main class="main-content">
+        <!-- ===== FIXED HEADER ===== -->
         <header class="topbar">
           <div class="topbar-left">
             <button class="hamburger" onclick="toggleSidebar()" aria-label="Toggle Navigation Sidebar"><i class="fas fa-bars"></i></button>
@@ -761,33 +806,17 @@
             <div class="home-hero">
               <div class="home-logo"><img src="https://res.cloudinary.com/t3tg9lfb/image/upload/v1783515403/1000374024_11zon-256x256_ivfvnp.png" alt="SIBAO Logo"></div>
               <h2>Welcome to <span>SIBAO TAS</span></h2>
-              <p>Smart Teacher Attendance System with fully integrated RFID technology.</p>
+              <p>Smart Teacher Attendance System with fully integrated Fingerprint technology.</p>
               <div class="home-actions">
                 <button class="btn btn-primary" onclick="switchTab('attendance')"><i class="fas fa-clipboard-list"></i> View Today's Attendance</button>
                 <button class="btn" onclick="switchTab('users')"><i class="fas fa-user-plus"></i> Manage Teachers</button>
               </div>
             </div>
             <div class="home-features">
-              <div class="feature-card">
-                <div class="feature-icon"><img src="https://img.icons8.com/fluency/48/rfid-signal.png" alt="RFID"/></div>
-                <h4>RFID Terminal</h4>
-                <p>Instant logs sync via smart scanning cards.</p>
-              </div>
-              <div class="feature-card">
-                <div class="feature-icon"><img src="https://img.icons8.com/fluency/48/clock.png" alt="Realtime"/></div>
-                <h4>Realtime Sync</h4>
-                <p>Instant tracking dashboard tracking live logs.</p>
-              </div>
-              <div class="feature-card">
-                <div class="feature-icon"><img src="https://img.icons8.com/fluency/48/microsoft-excel-2019.png" alt="Export"/></div>
-                <h4>Excel Reports</h4>
-                <p>One-click clean CSV downloads anytime.</p>
-              </div>
-              <div class="feature-card">
-                <div class="feature-icon"><img src="https://img.icons8.com/fluency/48/calendar.png" alt="Schedule"/></div>
-                <h4>Shift Control</h4>
-                <p>Configure custom shifts dynamically.</p>
-              </div>
+              <div class="feature-card"><div class="feature-icon"><i class="fas fa-fingerprint fingerprint-icon" style="font-size:30px;color:#2e7d32;"></i></div><h4>Fingerprint Scanner</h4><p>Instant logs sync via biometric scanning.</p></div>
+              <div class="feature-card"><div class="feature-icon"><i class="fas fa-clock" style="font-size:30px;color:#2e7d32;"></i></div><h4>Realtime Sync</h4><p>Instant tracking dashboard live logs.</p></div>
+              <div class="feature-card"><div class="feature-icon"><i class="fas fa-file-excel" style="font-size:30px;color:#2e7d32;"></i></div><h4>Excel Reports</h4><p>One-click clean CSV downloads.</p></div>
+              <div class="feature-card"><div class="feature-icon"><i class="fas fa-calendar-alt" style="font-size:30px;color:#2e7d32;"></i></div><h4>Shift Control</h4><p>Configure custom shifts dynamically.</p></div>
             </div>
             <div class="home-stats">
               <div class="stat-box"><div class="number" id="totalTeachersHome">0</div><div class="label">Total Teachers</div></div>
@@ -795,42 +824,15 @@
               <div class="stat-box"><div class="number" id="totalLateHome">0</div><div class="label">Late Today</div></div>
               <div class="stat-box"><div class="number" id="totalDaysHome">0</div><div class="label">Schedule Days</div></div>
             </div>
-
             <div class="home-info">
               <div class="about-container">
                 <div class="about-content">
-                  <div class="about-title">
-                    <i class="fas fa-info-circle" style="color:var(--green);"></i> About SIBAO TAS
-                  </div>
+                  <div class="about-title"><i class="fas fa-info-circle" style="color:var(--green);"></i> About SIBAO TAS</div>
                   <div class="about-grid">
-                    <div class="about-item">
-                      <div class="icon-box"><i class="fas fa-bullseye"></i></div>
-                      <div class="info">
-                        <h4>Purpose</h4>
-                        <p>Streamline teachers attendance tracking using RFID</p>
-                      </div>
-                    </div>
-                    <div class="about-item">
-                      <div class="icon-box"><i class="fas fa-code"></i></div>
-                      <div class="info">
-                        <h4>Technology</h4>
-                        <p>Built with Firebase, Cloudinary, and modern web technologies</p>
-                      </div>
-                    </div>
-                    <div class="about-item">
-                      <div class="icon-box"><i class="fas fa-star"></i></div>
-                      <div class="info">
-                        <h4>Features</h4>
-                        <p>Real-time updates, smart status detection, CSV export</p>
-                      </div>
-                    </div>
-                    <div class="about-item">
-                      <div class="icon-box"><i class="fas fa-shield-alt"></i></div>
-                      <div class="info">
-                        <h4>Security</h4>
-                        <p>Secure cloud-based storage with Firebase security rules</p>
-                      </div>
-                    </div>
+                    <div class="about-item"><div class="icon-box"><i class="fas fa-bullseye"></i></div><div class="info"><h4>Purpose</h4><p>Streamline teachers attendance tracking using biometric fingerprints</p></div></div>
+                    <div class="about-item"><div class="icon-box"><i class="fas fa-code"></i></div><div class="info"><h4>Technology</h4><p>Built with Firebase, Cloudinary, and modern web technologies</p></div></div>
+                    <div class="about-item"><div class="icon-box"><i class="fas fa-star"></i></div><div class="info"><h4>Features</h4><p>Real-time updates, smart status detection, CSV export</p></div></div>
+                    <div class="about-item"><div class="icon-box"><i class="fas fa-shield-alt"></i></div><div class="info"><h4>Security</h4><p>Biometric verification with Firebase security rules</p></div></div>
                   </div>
                 </div>
               </div>
@@ -849,6 +851,10 @@
               <button class="btn" onclick="clearUserFilters()"><i class="fas fa-times"></i> Clear</button>
               <button class="btn btn-primary" onclick="openAddUserModal()"><i class="fas fa-plus"></i> Add</button>
             </div>
+          </div>
+          <div class="pending-fingerprint-notification" id="pendingFingerprintNotification">
+            <div><span class="status-text"><i class="fas fa-fingerprint fingerprint-icon"></i> Fingerprint Detected:</span><span class="fp-display" id="pendingFingerprintDisplay">----------</span></div>
+            <div><span class="timer-badge" id="pendingFingerprintTimer">10s</span><button class="btn btn-sm btn-primary" onclick="autoFillFingerprintID()" style="margin-left:8px;"><i class="fas fa-arrow-right"></i> Use</button></div>
           </div>
           <div class="stats-grid" id="userStats"></div>
           <div class="table-container">
@@ -873,10 +879,7 @@
           <div class="table-container">
             <div class="table-header">
               <h3><i class="fas fa-clock" style="color:var(--green);"></i> Today's Attendance</h3>
-              <div class="header-right">
-                <span class="date-display" id="todayDateDisplay"></span>
-                <button class="btn btn-sm btn-primary" onclick="exportAttendanceCSV()"><i class="fas fa-file-csv"></i> Export</button>
-              </div>
+              <div class="header-right"><span class="date-display" id="todayDateDisplay"></span><button class="btn btn-sm btn-primary" onclick="exportAttendanceCSV()"><i class="fas fa-file-csv"></i> Export</button></div>
             </div>
             <div class="table-scroll"><div id="attendanceTableData"></div></div>
             <div id="attendancePagination"></div>
@@ -896,10 +899,7 @@
           </div>
           <div class="stats-grid" id="recordsStats"></div>
           <div class="table-container">
-            <div class="table-header">
-              <h3><i class="fas fa-history" style="color:var(--green);"></i> Attendance History</h3>
-              <button class="btn btn-sm btn-primary" onclick="exportRecordsCSV()"><i class="fas fa-file-csv"></i> Export</button>
-            </div>
+            <div class="table-header"><h3><i class="fas fa-history" style="color:var(--green);"></i> Attendance History</h3><button class="btn btn-sm btn-primary" onclick="exportRecordsCSV()"><i class="fas fa-file-csv"></i> Export</button></div>
             <div class="table-scroll"><div id="recordsTableData"></div></div>
             <div id="recordsPagination"></div>
           </div>
@@ -926,13 +926,13 @@
       </main>
     </div>
 
-    <div class="watermark">Powered by <strong>SIBAO TAS Terminal v1.0</strong></div>
+    <div class="watermark">Powered by <strong>SIBAO TAS Fingerprint Terminal v1.0</strong></div>
 
     <div class="modal-overlay" id="filterModal"><div class="modal"><div class="modal-header"><h2>Filters</h2><button class="close-btn" onclick="closeFilterModal()">&times;</button></div><div id="filterContent"></div></div></div>
     
     <div class="modal-overlay" id="addUserModal"><div class="modal"><div class="modal-header"><h2><i class="fas fa-user-plus" style="color:var(--green);"></i> New Teacher</h2><button class="close-btn" onclick="closeAddUserModal()">&times;</button></div>
       <div class="filter-group"><label>Full Name</label><input type="text" id="newUserName" placeholder="e.g. Teacher"></div>
-      <div class="filter-group"><label>RFID UID</label><input type="text" id="newUserUID" placeholder="e.g. 3A4B5C6D"></div>
+      <div class="filter-group"><label>Fingerprint ID</label><input type="text" id="newUserFingerprint" placeholder="e.g. FP-001"><button class="btn btn-sm btn-primary" onclick="autoFillFingerprintID()" style="margin-top:6px;width:100%;justify-content:center;"><i class="fas fa-fingerprint"></i> Auto-fill from Scanner</button></div>
       <div class="filter-group"><label>Department</label><select id="newUserDept"><option>Science</option><option>Arts</option><option>Commercial</option></select></div>
       <div class="filter-group"><label>Email</label><input type="email" id="newUserEmail" placeholder="e.g. user@gmail.com"></div>
       <div class="filter-group"><label>Profile Picture</label>
@@ -953,7 +953,7 @@
     <div class="modal-overlay" id="editUserModal"><div class="modal"><div class="modal-header"><h2><i class="fas fa-user-edit" style="color:#ff9800;"></i> Edit Teacher</h2><button class="close-btn" onclick="closeEditUserModal()">&times;</button></div>
       <input type="hidden" id="editUserKey">
       <div class="filter-group"><label>Full Name</label><input type="text" id="editUserName"></div>
-      <div class="filter-group"><label>RFID UID (Immutable)</label><input type="text" id="editUserUID" readonly style="opacity:0.6;"></div>
+      <div class="filter-group"><label>Fingerprint ID (Immutable)</label><input type="text" id="editUserFingerprint" readonly style="opacity:0.6;"></div>
       <div class="filter-group"><label>Department</label><select id="editUserDept"><option>Science</option><option>Arts</option><option>Commercial</option></select></div>
       <div class="filter-group"><label>Email</label><input type="email" id="editUserEmail"></div>
       <div class="filter-group"><label>Status</label><select id="editUserStatus"><option>Active</option><option>Inactive</option></select></div>
@@ -972,11 +972,9 @@
       <div class="filter-actions"><button class="btn" onclick="closeEditUserModal()">Cancel</button><button class="btn btn-warning" style="color:white;" onclick="updateUser()"><i class="fas fa-save"></i> Save Changes</button></div>
     </div></div>
 
-    <div class="modal-overlay" id="editScheduleModal"><div class="modal"><div class="modal-header"><h2><i class="fas fa-calendar-edit" style="color:var(--green);"></i> Adjust Shift Schedule</h2><button class="close-btn" onclick="closeEditScheduleModal()">&times;</button></div>
-      <div id="editScheduleModalContent"></div>
-    </div></div>
+    <div class="modal-overlay" id="editScheduleModal"><div class="modal"><div class="modal-header"><h2><i class="fas fa-calendar-edit" style="color:var(--green);"></i> Adjust Shift Schedule</h2><button class="close-btn" onclick="closeEditScheduleModal()">&times;</button></div><div id="editScheduleModalContent"></div></div></div>
 
-    <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div><p>Synchronizing Realtime Cloud Tables...</p></div>
+    <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div><p>Synchronizing Biometric Realtime Data...</p></div>
   </div>
 
   <script>
@@ -992,6 +990,55 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+
+    // ========== AUTO-CREATE ALL DATABASE NODES ==========
+    function initializeAllNodes() {
+      console.log('🔧 Initializing database structure...');
+      
+      // NO DEFAULT TEACHERS - Start empty!
+      const defaultSchedule = {
+        monday: { day: "Monday", clockIn: "07:00:00", clockOut: "15:15:00", latenessThreshold: 40 },
+        tuesday: { day: "Tuesday", clockIn: "07:00:00", clockOut: "15:15:00", latenessThreshold: 40 },
+        wednesday: { day: "Wednesday", clockIn: "07:00:00", clockOut: "15:15:00", latenessThreshold: 40 },
+        thursday: { day: "Thursday", clockIn: "07:00:00", clockOut: "15:15:00", latenessThreshold: 40 },
+        friday: { day: "Friday", clockIn: "07:00:00", clockOut: "14:00:00", latenessThreshold: 40 },
+        saturday: { day: "Saturday", clockIn: "NO SCHEDULE", clockOut: "NO SCHEDULE", latenessThreshold: 0 },
+        sunday: { day: "Sunday", clockIn: "NO SCHEDULE", clockOut: "NO SCHEDULE", latenessThreshold: 0 }
+      };
+
+      const defaultAdmins = {
+        admin1: { uid: "admin123", password: "password123", name: "Administrator", role: "admin", email: "admin@sibao.sch.ng" },
+        admin2: { uid: "principal", password: "principal2024", name: "School Principal", role: "superadmin", email: "principal@sibao.sch.ng" }
+      };
+
+      const nodesToCheck = ['pending_fingerprints', 'teachers', 'attendance', 'schedule', 'admins', 'pending_cards', 'daily_attendance'];
+      
+      nodesToCheck.forEach(node => {
+        db.ref(node).once('value')
+          .then((snapshot) => {
+            if (!snapshot.exists()) {
+              console.log(`📁 Creating ${node} node...`);
+              let data = {};
+              if (node === 'teachers') {
+                // Empty teachers node - NO DEFAULT TEACHERS
+                data = { _init: { created: new Date().toISOString(), note: "Add teachers manually or via fingerprint" } };
+              } else if (node === 'schedule') data = defaultSchedule;
+              else if (node === 'admins') data = defaultAdmins;
+              else if (node === 'daily_attendance') data = { _init: { created: new Date().toISOString() } };
+              else if (node === 'pending_fingerprints') data = { _init: { created: new Date().toISOString() } };
+              else if (node === 'pending_cards') data = { _init: { created: new Date().toISOString() } };
+              else if (node === 'attendance') data = { _init: { created: new Date().toISOString() } };
+              return db.ref(node).set(data);
+            } else {
+              console.log(`✅ ${node} node exists`);
+            }
+            return Promise.resolve();
+          })
+          .catch((error) => {
+            console.error(`❌ Error with ${node}:`, error);
+          });
+      });
+    }
 
     // ========== LOGIN HANDLER ==========
     const loginPage = document.getElementById('loginPage');
@@ -1059,7 +1106,8 @@
             setTimeout(() => {
               loginPage.style.display = 'none';
               mainApp.classList.add('visible');
-              setTimeout(startLiveSync, 200);
+              initializeAllNodes();
+              setTimeout(startLiveSync, 500);
             }, 800);
           } else {
             showAlert(' Incorrect password. Please try again.');
@@ -1082,17 +1130,16 @@
       sessionStorage.removeItem('sibao_admin_key');
       mainApp.classList.remove('visible');
       loginPage.style.display = 'flex';
-      // Clear input fields
       idInput.value = '';
       passInput.value = '';
     }
 
-    // Check for existing session
     window.addEventListener('load', function() {
       if (sessionStorage.getItem('sibao_auth') === 'true') {
         loginPage.style.display = 'none';
         mainApp.classList.add('visible');
-        setTimeout(startLiveSync, 200);
+        initializeAllNodes();
+        setTimeout(startLiveSync, 500);
       }
     });
 
@@ -1109,6 +1156,10 @@
     const perPage=10;
     const MAX_TEACHERS=100;
 
+    let pendingFingerprint = null;
+    let pendingFingerprintTimer = null;
+    let pendingFingerprintCountdown = 10;
+
     function getTodayDate() {
       const d = new Date();
       return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -1116,68 +1167,26 @@
     function getTodayDayName() {
       return ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];
     }
-    function getScheduleForDay(dayName) {
-      return schedule.find(s => s.day === dayName);
-    }
-    function getUserPhoto(uid) {
-      const u = users.find(t=>t.uid===uid);
-      return u ? u.profilePhoto : null;
-    }
-    function getUserName(uid) {
-      const u = users.find(t=>t.uid===uid);
-      return u ? u.name : null;
-    }
-    function getUserDepartment(uid) {
-      const u = users.find(t=>t.uid===uid);
-      return u ? u.department : null;
-    }
-
-    function hasClockInToday(uid, date) {
-      const today = date || getTodayDate();
-      const todayRecords = attendance.filter(a => {
-        if (!a.timestamp) return false;
-        const recordDate = a.timestamp.split(' ')[0];
-        return a.uid === uid && recordDate === today && a.action === 'IN';
-      });
-      return todayRecords.length > 0;
-    }
-
-    function hasClockOutToday(uid, date) {
-      const today = date || getTodayDate();
-      const todayRecords = attendance.filter(a => {
-        if (!a.timestamp) return false;
-        const recordDate = a.timestamp.split(' ')[0];
-        return a.uid === uid && recordDate === today && a.action === 'OUT';
-      });
-      return todayRecords.length > 0;
-    }
+    function getScheduleForDay(dayName) { return schedule.find(s => s.day === dayName); }
+    function getUserPhoto(fpId) { const u = users.find(t=>t.fingerprintId===fpId || t.uid===fpId); return u ? u.profilePhoto : null; }
+    function getUserName(fpId) { const u = users.find(t=>t.fingerprintId===fpId || t.uid===fpId); return u ? u.name : null; }
+    function getUserDepartment(fpId) { const u = users.find(t=>t.fingerprintId===fpId || t.uid===fpId); return u ? u.department : null; }
 
     function determineStatusFromSchedule(clockInTime, dateStr) {
-      if (!clockInTime || clockInTime === '--') return 'NO SCHEDULE';
-      
+      if (!clockInTime || clockInTime === '--' || clockInTime === 'NO SCHEDULE') return 'NO SCHEDULE';
       const today = getTodayDate();
-      
-      if (dateStr !== today) {
-        return null;
-      }
-      
+      if (dateStr !== today) return null;
       const d = new Date(dateStr + 'T00:00:00');
       const dayName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d.getDay()];
       const daySchedule = getScheduleForDay(dayName);
-      
-      if (!daySchedule || !daySchedule.clockIn || daySchedule.clockIn === '--' || daySchedule.clockIn === 'NO SCHEDULE') {
-        return 'NO SCHEDULE';
-      }
-      
+      if (!daySchedule || !daySchedule.clockIn || daySchedule.clockIn === '--' || daySchedule.clockIn === 'NO SCHEDULE') return 'NO SCHEDULE';
       const threshold = daySchedule.latenessThreshold || 40;
       const sch = daySchedule.clockIn || '07:00:00';
-      
       const c = clockInTime.split(':');
       const s = sch.split(':');
       const cMin = parseInt(c[0])*60 + parseInt(c[1]) + (parseInt(c[2]) || 0)/60;
       const sMin = parseInt(s[0])*60 + parseInt(s[1]) + (parseInt(s[2]) || 0)/60;
       const diff = cMin - sMin;
-      
       if (diff < 0) return 'EARLY';
       if (diff <= threshold) return 'ON TIME';
       return 'LATE';
@@ -1185,69 +1194,47 @@
 
     function mergeAttendanceRecords(data) {
       const merged = {};
-      
-      // 1. Sort records chronologically so older taps are processed first
-      const sortedData = [...data].sort((a, b) => {
-        return (a.timestamp || '').localeCompare(b.timestamp || '');
-      });
-      
-      // Track the absolute last known status of each user across days
-      const userLastAction = {}; 
-
+      const sortedData = [...data].sort((a, b) => (a.timestamp || '').localeCompare(b.timestamp || ''));
       sortedData.forEach(record => {
         if (!record.timestamp) return;
         const parts = record.timestamp.split(' ');
         if (parts.length < 2) return;
-        
         const date = parts[0];
         const time = parts[1];
-        const key = `${record.uid}_${date}`;
+        const uid = record.uid || record.fingerprintId || 'unknown';
+        const key = `${uid}_${date}`;
+        let action = record.action || 'IN';
         
-        let action = record.action;
-
-        // 2. SMART CROSS-DAY CORRECTION
-        // If the database says OUT, but there is no IN record yet FOR THIS SPECIFIC DAY, 
-        // it means they forgot to clock out on a previous day. Force it to be an 'IN' for today!
-        if (action === 'OUT' && (!merged[key] || merged[key].clockIn === '--')) {
-          action = 'IN';
-        }
-
-        // Initialize the daily object if it doesn't exist
         if (!merged[key]) {
           merged[key] = {
-            uid: record.uid,
-            name: getUserName(record.uid) || record.name || 'Unknown',
-            department: getUserDepartment(record.uid) || record.department || 'N/A',
+            fingerprintId: uid,
+            name: record.name || getUserName(uid) || 'Unknown',
+            department: record.department || getUserDepartment(uid) || 'N/A',
             date: date,
             clockIn: '--',
             clockOut: '--',
             status: record.status || 'PENDING',
-            photo: getUserPhoto(record.uid)
+            photo: getUserPhoto(uid)
           };
         }
         
-        // 3. Assign the times based on corrected action
-        if (action === 'IN') {
-          merged[key].clockIn = time;
-          const newStatus = determineStatusFromSchedule(time, date);
-          if (newStatus !== null) {
-            merged[key].status = newStatus;
-          } else {
-            merged[key].status = record.status || 'PENDING';
+        if (action === 'IN' || action === 'in') {
+          if (merged[key].clockIn === '--') {
+            merged[key].clockIn = time;
+            const newStatus = determineStatusFromSchedule(time, date);
+            merged[key].status = newStatus !== null ? newStatus : (record.status || 'PENDING');
           }
-        } else if (action === 'OUT') {
+        } else if (action === 'OUT' || action === 'out') {
           merged[key].clockOut = time;
           if (merged[key].clockIn !== '--' && merged[key].status === 'PENDING') {
             const newStatus = determineStatusFromSchedule(merged[key].clockIn, date);
-            if (newStatus !== null) {
-              merged[key].status = newStatus;
-            }
+            if (newStatus !== null) merged[key].status = newStatus;
           }
         }
       });
-      
       return Object.values(merged);
     }
+
     let filterState = {
       users:{dept:'all',status:'all'},
       attendance:{status:'all'},
@@ -1259,13 +1246,9 @@
     function showLoading(v){ $('loadingOverlay').classList.toggle('show',v); }
     function toast(msg){
       const t=document.createElement('div');
-      t.className='toast';
-      t.textContent=msg;
+      t.className='toast'; t.textContent=msg;
       document.body.appendChild(t);
-      setTimeout(()=>{
-        t.style.opacity='0';
-        setTimeout(()=>t.remove(),300);
-      },2800);
+      setTimeout(()=>{ t.style.opacity='0'; setTimeout(()=>t.remove(),300); },2800);
     }
 
     function switchTab(tab) {
@@ -1297,40 +1280,28 @@
         if(data.secure_url) {
           const url = data.secure_url;
           if(type==='new') {
-            $('newUserProfileUrl').value=url;
-            $('newUserProfilePreview').src=url;
-            $('newUserProfilePreview').style.display='block';
+            $('newUserProfileUrl').value=url; $('newUserProfilePreview').src=url; $('newUserProfilePreview').style.display='block';
             if($('newUserProfilePlaceholder')) $('newUserProfilePlaceholder').style.display='none';
             $('removeNewPhotoBtn').style.display='inline-flex';
           } else {
-            $('editUserProfileUrl').value=url;
-            $('editUserProfilePreview').src=url;
-            $('editUserProfilePreview').style.display='block';
+            $('editUserProfileUrl').value=url; $('editUserProfilePreview').src=url; $('editUserProfilePreview').style.display='block';
             if($('editUserProfilePlaceholder')) $('editUserProfilePlaceholder').style.display='none';
             $('removeEditPhotoBtn').style.display='inline-flex';
           }
           toast(' Photo uploaded');
         } else toast('  Upload failed');
         input.value='';
-      }).catch(e=>{
-        showLoading(false);
-        toast('  Upload failed');
-        input.value='';
-      });
+      }).catch(e=>{ showLoading(false); toast('  Upload failed'); input.value=''; });
     }
 
     function removeNewUserPhoto(){
-      $('newUserProfileUrl').value='';
-      $('newUserProfilePreview').style.display='none';
-      $('newUserProfilePlaceholder').style.display='flex';
-      $('removeNewPhotoBtn').style.display='none';
+      $('newUserProfileUrl').value=''; $('newUserProfilePreview').style.display='none';
+      $('newUserProfilePlaceholder').style.display='flex'; $('removeNewPhotoBtn').style.display='none';
       toast('  Photo removed');
     }
     function removeEditUserPhoto(){
-      $('editUserProfileUrl').value='';
-      $('editUserProfilePreview').style.display='none';
-      $('editUserProfilePlaceholder').style.display='flex';
-      $('removeEditPhotoBtn').style.display='none';
+      $('editUserProfileUrl').value=''; $('editUserProfilePreview').style.display='none';
+      $('editUserProfilePlaceholder').style.display='flex'; $('removeEditPhotoBtn').style.display='none';
       toast('  Photo removed');
     }
 
@@ -1338,18 +1309,9 @@
       const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
       const url = URL.createObjectURL(blob);
       const a=document.createElement('a');
-      a.href=url;
-      a.download=name;
-      a.style.display='none';
+      a.href=url; a.download=name; a.style.display='none';
       document.body.appendChild(a);
-      setTimeout(()=>{
-        a.click();
-        setTimeout(()=>{
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          toast(' Download started');
-        },100);
-      },100);
+      setTimeout(()=>{ a.click(); setTimeout(()=>{ document.body.removeChild(a); URL.revokeObjectURL(url); toast(' Download started'); },100); },100);
     }
 
     function openFilterModal(tab){
@@ -1376,15 +1338,13 @@
     function closeFilterModal(){ $('filterModal').classList.remove('show'); }
     function applyFiltersFromModal(tab){
       if(tab==='users'){
-        filterState.users.dept=$('filterUserDept').value;
-        filterState.users.status=$('filterUserStatus').value;
+        filterState.users.dept=$('filterUserDept').value; filterState.users.status=$('filterUserStatus').value;
         applyUserFilters();
       } else if(tab==='attendance'){
         filterState.attendance.status=$('filterAttStatus').value;
         applyAttendanceFilters();
       } else if(tab==='records'){
-        filterState.records.startDate=$('filterRecStart').value;
-        filterState.records.endDate=$('filterRecEnd').value;
+        filterState.records.startDate=$('filterRecStart').value; filterState.records.endDate=$('filterRecEnd').value;
         filterState.records.status=$('filterRecStatus').value;
         applyRecordsFilters();
       } else if(tab==='schedule'){
@@ -1394,71 +1354,160 @@
       closeFilterModal();
     }
 
-    // TEACHERS
+    function showPendingFingerprint(fpId) {
+      pendingFingerprint = fpId;
+      pendingFingerprintCountdown = 10;
+      const notification = document.getElementById('pendingFingerprintNotification');
+      const display = document.getElementById('pendingFingerprintDisplay');
+      const timer = document.getElementById('pendingFingerprintTimer');
+      display.textContent = fpId;
+      timer.textContent = '10s';
+      notification.classList.add('show');
+      if (pendingFingerprintTimer) { clearInterval(pendingFingerprintTimer); pendingFingerprintTimer = null; }
+      pendingFingerprintTimer = setInterval(() => {
+        pendingFingerprintCountdown--;
+        timer.textContent = pendingFingerprintCountdown + 's';
+        if (pendingFingerprintCountdown <= 0) {
+          clearInterval(pendingFingerprintTimer);
+          pendingFingerprintTimer = null;
+          clearPendingFingerprint();
+          toast('⏰ Fingerprint ID expired (10s)');
+          deletePendingFingerprint(fpId);
+        }
+      }, 1000);
+    }
+    
+    function clearPendingFingerprint() {
+      pendingFingerprint = null;
+      document.getElementById('pendingFingerprintNotification').classList.remove('show');
+      if (pendingFingerprintTimer) { clearInterval(pendingFingerprintTimer); pendingFingerprintTimer = null; }
+    }
+    
+    function autoFillFingerprintID() {
+      if (!pendingFingerprint) { toast(' No pending fingerprint detected'); return; }
+      if (users.some(u => u.fingerprintId === pendingFingerprint || u.uid === pendingFingerprint)) { 
+        toast(' Fingerprint ID already registered'); 
+        return; 
+      }
+      openAddUserModal();
+      const fpInput = document.getElementById('newUserFingerprint');
+      fpInput.value = pendingFingerprint;
+      clearPendingFingerprint();
+      toast(' Fingerprint ID auto-filled! Please complete the form.');
+    }
+
+    function deletePendingFingerprint(fpId) {
+      if (!fpId) return;
+      db.ref('pending_fingerprints').orderByChild('fingerprintId').equalTo(fpId).once('value')
+        .then((snapshot) => {
+          if (snapshot.val()) {
+            Object.keys(snapshot.val()).forEach(key => {
+              db.ref('pending_fingerprints/' + key).remove().catch(() => {});
+            });
+          }
+        }).catch(() => {});
+      
+      const cleanId = fpId.replace('FP-', '');
+      db.ref('pending_cards').orderByChild('uid').equalTo(cleanId).once('value')
+        .then((snapshot) => {
+          if (snapshot.val()) {
+            Object.keys(snapshot.val()).forEach(key => {
+              db.ref('pending_cards/' + key).remove().catch(() => {});
+            });
+          }
+        }).catch(() => {});
+    }
+
+    function watchPendingFingerprints() {
+      db.ref('pending_fingerprints').on('child_added', (snapshot) => {
+        const data = snapshot.val();
+        if (data && data.fingerprintId && data.fingerprintId !== '_init') {
+          const fpId = data.fingerprintId.trim();
+          if (users.some(u => u.fingerprintId === fpId || u.uid === fpId)) { 
+            deletePendingFingerprint(fpId); 
+            return; 
+          }
+          showPendingFingerprint(fpId);
+        }
+      });
+
+      db.ref('pending_cards').on('child_added', (snapshot) => {
+        const data = snapshot.val();
+        if (data && data.uid && data.uid !== '_init') {
+          let fpId = data.uid;
+          if (!fpId.startsWith('FP-')) fpId = 'FP-' + fpId;
+          
+          if (users.some(u => u.fingerprintId === fpId || u.uid === fpId)) {
+            db.ref('pending_cards/' + snapshot.key).remove().catch(() => {});
+            return;
+          }
+          
+          db.ref('pending_fingerprints').orderByChild('fingerprintId').equalTo(fpId).once('value')
+            .then((snap) => {
+              if (!snap.exists()) {
+                const newRef = db.ref('pending_fingerprints').push();
+                return newRef.set({
+                  fingerprintId: fpId,
+                  timestamp: data.timestamp || new Date().toISOString(),
+                  status: 'pending',
+                  source: 'arduino'
+                });
+              }
+              return Promise.resolve();
+            })
+            .then(() => {
+              if (snapshot.key && snapshot.key !== '_init') {
+                db.ref('pending_cards/' + snapshot.key).remove().catch(() => {});
+              }
+            })
+            .catch(() => {});
+        }
+      });
+    }
+
     function applyUserFilters(){
       let data=[...users];
       const q=$('userSearch').value.toLowerCase();
-      if(q) data=data.filter(u=>(u.name||'').toLowerCase().includes(q)||(u.uid||'').toLowerCase().includes(q));
+      if(q) data=data.filter(u=>(u.name||'').toLowerCase().includes(q)||(u.fingerprintId||u.uid||'').toLowerCase().includes(q));
       if(filterState.users.dept!=='all') data=data.filter(u=>u.department===filterState.users.dept);
       if(filterState.users.status!=='all') data=data.filter(u=>u.status===filterState.users.status);
       $('userCountDisplay').textContent=data.length+' teachers';
-      renderUserStats(data);
-      renderUserTable(data);
+      renderUserStats(data); renderUserTable(data);
     }
     function renderUserStats(data){
-      const total=data.length;
-      const active=data.filter(u=>u.status==='Active').length;
-      const inactive=data.filter(u=>u.status==='Inactive').length;
+      const total=data.length, active=data.filter(u=>u.status==='Active').length, inactive=data.filter(u=>u.status==='Inactive').length;
       const depts = new Set(data.map(u=>u.department)).size;
       $('userStats').innerHTML=`
         <div class="stat-card"><div class="stat-label">TOTAL TEACHERS</div><div class="stat-value">${total}</div></div>
         <div class="stat-card"><div class="stat-label">ACTIVE</div><div class="stat-value success">${active}</div></div>
         <div class="stat-card"><div class="stat-label">INACTIVE</div><div class="stat-value danger">${inactive}</div></div>
-        <div class="stat-card"><div class="stat-label">DEPTS</div><div class="stat-value">${depts}</div></div>
-      `;
+        <div class="stat-card"><div class="stat-label">DEPTS</div><div class="stat-value">${depts}</div></div>`;
     }
     function renderUserTable(data){
       const start=(userPage-1)*perPage, end=start+perPage, page=data.slice(start,end);
-      if(!page.length){
-        $('userTableData').innerHTML=`<div class="no-data"><i class="fas fa-user-friends"></i><p>No registered teachers matched filter criteria.</p></div>`;
-        $('userPagination').innerHTML=''; return;
-      }
-      let html=`<table><thead><tr><th>#</th><th>PHOTO</th><th>NAME</th><th>RFID UID</th><th>DEPT</th><th>EMAIL</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody>`;
+      if(!page.length){ $('userTableData').innerHTML=`<div class="no-data"><i class="fas fa-user-friends"></i><p>No teachers found</p></div>`; $('userPagination').innerHTML=''; return; }
+      let html=`<table><thead><tr><th>#</th><th>PHOTO</th><th>NAME</th><th>FINGERPRINT ID</th><th>DEPT</th><th>EMAIL</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody>`;
       page.forEach((u, index)=>{
-        const num = start + index + 1;
         const pic = u.profilePhoto ? `<img class="profile-img-in-table" src="${u.profilePhoto}" alt="Photo">` : `<div class="profile-img-in-table-placeholder"><i class="fas fa-user"></i></div>`;
-        html+=`<tr>
-          <td>${num}</td>
-          <td>${pic}</td>
-          <td><strong>${u.name||'N/A'}</strong></td>
-          <td><code style="font-weight:700;color:var(--green);">${u.uid}</code></td>
-          <td>${u.department||'N/A'}</td>
-          <td><span style="font-size:12px;color:var(--text-secondary);">${u.email||'N/A'}</span></td>
-          <td><span class="badge ${u.status==='Active'?'badge-success':'badge-danger'}">${u.status}</span></td>
-          <td><div class="btn-group"><button class="btn btn-xs btn-warning" style="color:white;" onclick="openEditUserModal('${u.key}')"><i class="fas fa-edit"></i></button><button class="btn btn-xs btn-danger" onclick="removeUser('${u.key}')"><i class="fas fa-trash"></i></button></div></td>
-        </tr>`;
+        const fpId = u.fingerprintId || u.uid || 'N/A';
+        html+=`<tr><td>${start+index+1}</td><td>${pic}</td><td><strong>${u.name||'N/A'}</strong></td><td><code style="font-weight:700;color:var(--green);"><i class="fas fa-fingerprint" style="font-size:11px;margin-right:4px;"></i>${fpId}</code></td><td>${u.department||'N/A'}</td><td><span style="font-size:12px;color:var(--text-secondary);">${u.email||'N/A'}</span></td><td><span class="badge ${u.status==='Active'?'badge-success':'badge-danger'}">${u.status}</span></td>
+        <td><div class="action-btns"><button class="btn btn-edit btn-xs" onclick="openEditUserModal('${u.key}')"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-delete btn-xs" onclick="removeUser('${u.key}')"><i class="fas fa-trash"></i> Delete</button></div></td></tr>`;
       });
-      html+='</tbody></table>';
-      $('userTableData').innerHTML=html;
+      html+='</tbody></table>'; $('userTableData').innerHTML=html;
       const pages=Math.ceil(data.length/perPage);
       let p='<div class="pagination">';
-      for(let i=1;i<=Math.min(pages,10);i++) p+=`<button class="page-btn ${i===userPage?'active':''}" onclick="userPage=${i};renderUserTable(data);">${i}</button>`;
+      for(let i=1;i<=Math.min(pages,10);i++) p+=`<button class="page-btn ${i===userPage?'active':''}" onclick="userPage=${i};renderUserTable(data)">${i}</button>`;
       p+='</div>'; $('userPagination').innerHTML=p;
     }
     function openEditUserModal(key){
       const u=users.find(t=>t.key===key); if(!u) return;
       $('editUserModal').classList.add('show');
-      $('editUserKey').value=key; $('editUserName').value=u.name||''; $('editUserUID').value=u.uid;
+      $('editUserKey').value=key; $('editUserName').value=u.name||''; 
+      $('editUserFingerprint').value=u.fingerprintId || u.uid || '';
       $('editUserDept').value=u.department||'Science'; $('editUserEmail').value=u.email||''; $('editUserStatus').value=u.status||'Active';
       $('editUserProfileUrl').value=u.profilePhoto||'';
-      if(u.profilePhoto) {
-        $('editUserProfilePreview').src=u.profilePhoto; $('editUserProfilePreview').style.display='block';
-        if($('editUserProfilePlaceholder')) $('editUserProfilePlaceholder').style.display='none';
-        $('removeEditPhotoBtn').style.display='inline-flex';
-      } else {
-        $('editUserProfilePreview').style.display='none'; $('editUserProfilePlaceholder').style.display='flex';
-        $('removeEditPhotoBtn').style.display='none';
-      }
+      if(u.profilePhoto) { $('editUserProfilePreview').src=u.profilePhoto; $('editUserProfilePreview').style.display='block'; $('editUserProfilePlaceholder').style.display='none'; $('removeEditPhotoBtn').style.display='inline-flex'; }
+      else { $('editUserProfilePreview').style.display='none'; $('editUserProfilePlaceholder').style.display='flex'; $('removeEditPhotoBtn').style.display='none'; }
     }
     function closeEditUserModal(){ $('editUserModal').classList.remove('show'); }
     function updateUser(){
@@ -1467,213 +1516,129 @@
       showLoading(true);
       db.ref('teachers/'+key).update({name,department:dept,email,status,profilePhoto:photo}).then(()=>{
         closeEditUserModal(); showLoading(false); toast('Teacher updated');
-      }).catch(e=>{ showLoading(false); toast(+e.message); });
+      }).catch(e=>{ showLoading(false); toast(' Error: '+e.message); });
     }
     function clearUserFilters(){ filterState.users={dept:'all',status:'all'}; $('userSearch').value=''; applyUserFilters(); toast('Filters reset'); }
-    function openAddUserModal(){ if(users.length>=MAX_TEACHERS) return toast(` Maximum ${MAX_TEACHERS} teachers`); $('addUserModal').classList.add('show'); $('newUserName').value=''; $('newUserUID').value=''; $('newUserEmail').value=''; $('newUserProfileUrl').value=''; $('newUserProfilePreview').style.display='none'; $('newUserProfilePlaceholder').style.display='flex'; $('removeNewPhotoBtn').style.display='none'; }
+    function openAddUserModal(){ if(users.length>=MAX_TEACHERS) return toast(` Maximum ${MAX_TEACHERS} teachers`); $('addUserModal').classList.add('show'); $('newUserName').value=''; $('newUserFingerprint').value=''; $('newUserEmail').value=''; $('newUserProfileUrl').value=''; $('newUserProfilePreview').style.display='none'; $('newUserProfilePlaceholder').style.display='flex'; $('removeNewPhotoBtn').style.display='none'; }
     function closeAddUserModal(){ $('addUserModal').classList.remove('show'); }
     function addUser(){
       if(users.length>=MAX_TEACHERS) return toast(` Maximum ${MAX_TEACHERS} teachers`);
-      const name=$('newUserName').value.trim(), uid=$('newUserUID').value.trim().toUpperCase().replace(/[^A-F0-9]/g,''), dept=$('newUserDept').value, email=$('newUserEmail').value.trim()||'N/A', profilePhoto=$('newUserProfileUrl').value||null;
-      if(!name||!uid) return toast(' Name and RFID UID required');
-      if(users.some(t=>t.uid===uid)) return toast('UID already registered');
-      const obj={name,uid,department:dept,email,status:'Active',profilePhoto,createdAt:new Date().toISOString()};
+      const name=$('newUserName').value.trim(), fpId=$('newUserFingerprint').value.trim(), dept=$('newUserDept').value, email=$('newUserEmail').value.trim()||'N/A', profilePhoto=$('newUserProfileUrl').value||null;
+      if(!name||!fpId) return toast(' Name and Fingerprint ID required');
+      if(users.some(t=>t.fingerprintId===fpId || t.uid===fpId)) return toast(' Fingerprint ID already registered');
       showLoading(true);
-      db.ref('teachers').push(obj).then(()=>{ closeAddUserModal(); showLoading(false); toast('Teacher added'); }).catch(e=>{ showLoading(false); toast(e.message); });
+      db.ref('teachers').push({name, fingerprintId: fpId, uid: fpId, department:dept, email, status:'Active', profilePhoto, createdAt:new Date().toISOString(), biometricType:'fingerprint'}).then(()=>{
+        closeAddUserModal(); showLoading(false); toast(' Teacher added');
+        if(fpId) deletePendingFingerprint(fpId);
+        clearPendingFingerprint();
+      }).catch(e=>{ showLoading(false); toast('❌ Error: '+e.message); });
     }
-    function removeUser(key){ if(!confirm('Delete this teacher?')) return; db.ref('teachers/'+key).remove().then(()=>toast('Teacher removed')).catch(e=>toast(e.message)); }
-    
+    function removeUser(key){ if(!confirm('Delete this teacher?')) return; db.ref('teachers/'+key).remove().then(()=>toast('Teacher removed')).catch(e=>toast('❌ Error: '+e.message)); }
     function exportUsersCSV(){
       if(!users.length) return toast('No teachers');
-      let csv='Name,RFID UID,Department,Email,Status\n';
-      users.forEach(t=>{ csv+=`"${(t.name||'').replace(/"/g,'""')}","${t.uid}","${(t.department||'').replace(/"/g,'""')}","${(t.email||'').replace(/"/g,'""')}","${(t.status||'').replace(/"/g,'""')}"\n`; });
+      let csv='Name,Fingerprint ID,Department,Email,Status\n';
+      users.forEach(t=>{ 
+        const fpId = t.fingerprintId || t.uid || 'N/A';
+        csv+=`"${(t.name||'').replace(/"/g,'""')}","${fpId}","${(t.department||'').replace(/"/g,'""')}","${(t.email||'').replace(/"/g,'""')}","${(t.status||'').replace(/"/g,'""')}"\n`; 
+      });
       downloadCSV(csv,'sibao_teachers_export.csv');
     }
 
-    // ATTENDANCE
     function applyAttendanceFilters(){
       let mergedData = mergeAttendanceRecords(attendance);
       let data = [...mergedData];
-      
       const q=$('attendanceSearch').value.toLowerCase();
-      if(q) data=data.filter(a=>(a.name||'').toLowerCase().includes(q)||(a.uid||'').toLowerCase().includes(q));
+      if(q) data=data.filter(a=>(a.name||'').toLowerCase().includes(q)||(a.fingerprintId||'').toLowerCase().includes(q));
       if(filterState.attendance.status!=='all') data=data.filter(a=>a.status===filterState.attendance.status);
-      
       $('attendanceCountDisplay').textContent=data.length+' records';
-      renderAttendanceStats(data);
-      renderAttendanceTable(data);
+      renderAttendanceStats(data); renderAttendanceTable(data);
     }
-    
     function renderAttendanceStats(data){
-      const present = data.filter(a=>a.clockIn !== '--').length;
-      const late = data.filter(a=>a.status === 'LATE').length;
-      const early = data.filter(a=>a.status === 'EARLY').length;
-      const notYet = Math.max(0, users.length - present);
-      
+      const present = data.filter(a=>a.clockIn !== '--').length, late = data.filter(a=>a.status === 'LATE').length;
+      const early = data.filter(a=>a.status === 'EARLY').length, notYet = Math.max(0, users.length - present);
       $('attendanceStats').innerHTML=`
         <div class="stat-card"><div class="stat-label">PRESENT TODAY</div><div class="stat-value success">${present}</div></div>
         <div class="stat-card"><div class="stat-label">LATE</div><div class="stat-value warning">${late}</div></div>
         <div class="stat-card"><div class="stat-label">EARLY</div><div class="stat-value" style="color:var(--green);">${early}</div></div>
-        <div class="stat-card"><div class="stat-label">NOT YET IN</div><div class="stat-value danger">${notYet}</div></div>
-      `;
+        <div class="stat-card"><div class="stat-label">NOT YET IN</div><div class="stat-value danger">${notYet}</div></div>`;
     }
-    
     function renderAttendanceTable(data){
       const start=(attendancePage-1)*perPage, end=start+perPage, page=data.slice(start,end);
-      if(!page.length){
-        $('attendanceTableData').innerHTML=`<div class="no-data"><i class="fas fa-clipboard-list"></i><p>No attendance records today</p></div>`;
-        $('attendancePagination').innerHTML=''; return;
-      }
-      
-      let html=`<table><thead><tr><th>#</th><th>PHOTO</th><th>DATE</th><th>NAME</th><th>RFID</th><th>CLOCK IN</th><th>CLOCK OUT</th><th>STATUS</th></tr></thead><tbody>`;
-      
+      if(!page.length){ $('attendanceTableData').innerHTML=`<div class="no-data"><i class="fas fa-clipboard-list"></i><p>No records today</p></div>`; $('attendancePagination').innerHTML=''; return; }
+      let html=`<table><thead><tr><th>#</th><th>PHOTO</th><th>DATE</th><th>NAME</th><th>FINGERPRINT</th><th>IN</th><th>OUT</th><th>STATUS</th></tr></thead><tbody>`;
       page.forEach((a, index)=>{
-        const num = start + index + 1;
-        const photo=getUserPhoto(a.uid);
-        const photoHtml=photo?`<img class="profile-img-in-table" src="${photo}" alt="Photo">` : `<div class="profile-img-in-table-placeholder"><i class="fas fa-user"></i></div>`;
-        
+        const photo=getUserPhoto(a.fingerprintId);
+        const photoHtml=photo?`<img class="profile-img-in-table" src="${photo}" alt="Photo">`:`<div class="profile-img-in-table-placeholder"><i class="fas fa-user"></i></div>`;
         let bClass='badge-muted';
-        if(a.status === 'ON TIME' || a.status === 'EARLY') bClass='badge-success';
-        if(a.status === 'LATE') bClass='badge-warning';
-        if(a.status === 'NO SCHEDULE') bClass='badge-schedule';
-        
-        html+=`<tr>
-          <td>${num}</td>
-          <td>${photoHtml}</td>
-          <td>${a.date || getTodayDate()}</td>
-          <td><strong>${a.name||'Teacher'}</strong></td>
-          <td><code style="font-size:11px;">${a.uid}</code></td>
-          <td><span style="font-weight:600;color:var(--green);">${a.clockIn}</span></td>
-          <td><span style="font-weight:600;color:var(--danger);">${a.clockOut}</span></td>
-          <td><span class="badge ${bClass}">${a.status||'PENDING'}</span></td>
-        </tr>`;
+        if(a.status==='ON TIME'||a.status==='EARLY') bClass='badge-success';
+        if(a.status==='LATE') bClass='badge-warning';
+        if(a.status==='NO SCHEDULE') bClass='badge-schedule';
+        html+=`<tr><td>${start+index+1}</td><td>${photoHtml}</td><td>${a.date||getTodayDate()}</td><td><strong>${a.name||'Teacher'}</strong></td><td><code style="font-weight:600;color:var(--green);"><i class="fas fa-fingerprint" style="font-size:11px;margin-right:4px;"></i>${a.fingerprintId}</code></td><td><span style="font-weight:600;color:var(--green);">${a.clockIn}</span></td><td><span style="font-weight:600;color:var(--danger);">${a.clockOut}</span></td><td><span class="badge ${bClass}">${a.status||'PENDING'}</span></td></tr>`;
       });
-      
-      html+='</tbody></table>';
-      $('attendanceTableData').innerHTML=html;
-      
+      html+='</tbody></table>'; $('attendanceTableData').innerHTML=html;
       const pages=Math.ceil(data.length/perPage);
       let p='<div class="pagination">';
-      for(let i=1;i<=Math.min(pages,10);i++) p+=`<button class="page-btn ${i===attendancePage?'active':''}" onclick="attendancePage=${i};applyAttendanceFilters();">${i}</button>`;
-      p+='</div>';
-      $('attendancePagination').innerHTML=p;
+      for(let i=1;i<=Math.min(pages,10);i++) p+=`<button class="page-btn ${i===attendancePage?'active':''}" onclick="attendancePage=${i};applyAttendanceFilters()">${i}</button>`;
+      p+='</div>'; $('attendancePagination').innerHTML=p;
     }
-    
-    function clearAttendanceFilters(){ filterState.attendance={status:'all'}; $('attendanceSearch').value=''; applyAttendanceFilters(); toast(' Filters reset'); }
-
+    function clearAttendanceFilters(){ filterState.attendance={status:'all'}; $('attendanceSearch').value=''; applyAttendanceFilters(); toast('Filters reset'); }
     function exportAttendanceCSV(){
       let mergedData = mergeAttendanceRecords(attendance);
-      if(!mergedData.length) return toast('No attendance records for today');
-      
-      let csv='Date,Name,Department,RFID UID,Clock In,Clock Out,Status\n';
-      mergedData.forEach(r=>{
-        csv+=`"${r.date||getTodayDate()}","${(r.name||'').replace(/"/g,'""')}","${(r.department||'').replace(/"/g,'""')}","${r.uid}","${r.clockIn||'--'}","${r.clockOut||'--'}","${r.status||'PENDING'}"\n`;
-      });
+      if(!mergedData.length) return toast('No attendance records');
+      let csv='Date,Name,Department,Fingerprint ID,Clock In,Clock Out,Status\n';
+      mergedData.forEach(r=>{ csv+=`"${r.date||getTodayDate()}","${(r.name||'').replace(/"/g,'""')}","${(r.department||'').replace(/"/g,'""')}","${r.fingerprintId}","${r.clockIn||'--'}","${r.clockOut||'--'}","${r.status||'PENDING'}"\n`; });
       downloadCSV(csv,'sibao_attendance_today.csv');
     }
 
-    // RECORDS
     function applyRecordsFilters(){
       let mergedData = mergeAttendanceRecords(records);
       let data = [...mergedData];
-      
       const q=$('recordsSearch').value.toLowerCase();
-      if(q) data=data.filter(r=>(r.name||'').toLowerCase().includes(q)||(r.uid||'').toLowerCase().includes(q));
-      
-      if(filterState.records.startDate) {
-        data=data.filter(r=>{
-          if(!r.date) return false;
-          return r.date >= filterState.records.startDate;
-        });
-      }
-      if(filterState.records.endDate) {
-        data=data.filter(r=>{
-          if(!r.date) return false;
-          return r.date <= filterState.records.endDate;
-        });
-      }
+      if(q) data=data.filter(r=>(r.name||'').toLowerCase().includes(q)||(r.fingerprintId||'').toLowerCase().includes(q));
+      if(filterState.records.startDate) data=data.filter(r=>r.date && r.date >= filterState.records.startDate);
+      if(filterState.records.endDate) data=data.filter(r=>r.date && r.date <= filterState.records.endDate);
       if(filterState.records.status!=='all') data=data.filter(r=>r.status===filterState.records.status);
-      
-      data.sort((a,b) => {
-        if(!a.date) return 1;
-        if(!b.date) return -1;
-        return b.date.localeCompare(a.date);
-      });
-      
+      data.sort((a,b) => (b.date||'').localeCompare(a.date||''));
       $('recordsCountDisplay').textContent=data.length+' records';
-      renderRecordsStats(data);
-      renderRecordsTable(data);
+      renderRecordsStats(data); renderRecordsTable(data);
     }
-    
     function renderRecordsStats(data){
-      const total=data.length;
-      const late=data.filter(r=>r.status==='LATE').length;
-      const early=data.filter(r=>r.status==='EARLY').length;
-      const uniqueTeachers = new Set(data.map(r=>r.uid)).size;
-      
+      const total=data.length, late=data.filter(r=>r.status==='LATE').length;
+      const early=data.filter(r=>r.status==='EARLY').length, uniqueTeachers=new Set(data.map(r=>r.fingerprintId)).size;
       $('recordsStats').innerHTML=`
-        <div class="stat-card"><div class="stat-label">TOTAL HISTORY</div><div class="stat-value">${total}</div></div>
+        <div class="stat-card"><div class="stat-label">TOTAL</div><div class="stat-value">${total}</div></div>
         <div class="stat-card"><div class="stat-label">LATE</div><div class="stat-value warning">${late}</div></div>
         <div class="stat-card"><div class="stat-label">EARLY</div><div class="stat-value" style="color:var(--green);">${early}</div></div>
-        <div class="stat-card"><div class="stat-label">UNIQUE TEACHERS</div><div class="stat-value">${uniqueTeachers}</div></div>
-      `;
+        <div class="stat-card"><div class="stat-label">UNIQUE</div><div class="stat-value">${uniqueTeachers}</div></div>`;
     }
-    
     function renderRecordsTable(data){
       const start=(recordsPage-1)*perPage, end=start+perPage, page=data.slice(start,end);
-      if(!page.length){
-        $('recordsTableData').innerHTML=`<div class="no-data"><i class="fas fa-history"></i><p>No records found.</p></div>`;
-        $('recordsPagination').innerHTML=''; return;
-      }
-      
-      let html=`<table><thead><tr><th>#</th><th>PHOTO</th><th>DATE</th><th>NAME</th><th>RFID</th><th>CLOCK IN</th><th>CLOCK OUT</th><th>STATUS</th></tr></thead><tbody>`;
-      
+      if(!page.length){ $('recordsTableData').innerHTML=`<div class="no-data"><i class="fas fa-history"></i><p>No records found</p></div>`; $('recordsPagination').innerHTML=''; return; }
+      let html=`<table><thead><tr><th>#</th><th>PHOTO</th><th>DATE</th><th>NAME</th><th>FINGERPRINT</th><th>IN</th><th>OUT</th><th>STATUS</th></tr></thead><tbody>`;
       page.forEach((r, index)=>{
-        const num = start + index + 1;
-        const photo=getUserPhoto(r.uid);
-        const photoHtml=photo?`<img class="profile-img-in-table" src="${photo}" alt="Photo">` : `<div class="profile-img-in-table-placeholder"><i class="fas fa-user"></i></div>`;
-        
+        const photo=getUserPhoto(r.fingerprintId);
+        const photoHtml=photo?`<img class="profile-img-in-table" src="${photo}" alt="Photo">`:`<div class="profile-img-in-table-placeholder"><i class="fas fa-user"></i></div>`;
         let bClass='badge-muted';
         if(r.status==='ON TIME'||r.status==='EARLY') bClass='badge-success';
         if(r.status==='LATE') bClass='badge-warning';
         if(r.status==='NO SCHEDULE') bClass='badge-schedule';
-        
-        html+=`<tr>
-          <td>${num}</td>
-          <td>${photoHtml}</td>
-          <td>${r.date || '--'}</td>
-          <td><strong>${r.name||'Teacher'}</strong></td>
-          <td><code style="font-size:11px;">${r.uid}</code></td>
-          <td><span style="font-weight:600;color:var(--green);">${r.clockIn}</span></td>
-          <td><span style="font-weight:600;color:var(--danger);">${r.clockOut}</span></td>
-          <td><span class="badge ${bClass}">${r.status||'PENDING'}</span></td>
-        </tr>`;
+        html+=`<tr><td>${start+index+1}</td><td>${photoHtml}</td><td>${r.date||'--'}</td><td><strong>${r.name||'Teacher'}</strong></td><td><code style="font-weight:600;color:var(--green);"><i class="fas fa-fingerprint" style="font-size:11px;margin-right:4px;"></i>${r.fingerprintId}</code></td><td><span style="color:var(--green);">${r.clockIn}</span></td><td><span style="color:var(--danger);">${r.clockOut}</span></td><td><span class="badge ${bClass}">${r.status||'PENDING'}</span></td></tr>`;
       });
-      
-      html+='</tbody></table>';
-      $('recordsTableData').innerHTML=html;
-      
+      html+='</tbody></table>'; $('recordsTableData').innerHTML=html;
       const pages=Math.ceil(data.length/perPage);
       let p='<div class="pagination">';
-      for(let i=1;i<=Math.min(pages,10);i++) p+=`<button class="page-btn ${i===recordsPage?'active':''}" onclick="recordsPage=${i};applyRecordsFilters();">${i}</button>`;
-      p+='</div>';
-      $('recordsPagination').innerHTML=p;
+      for(let i=1;i<=Math.min(pages,10);i++) p+=`<button class="page-btn ${i===recordsPage?'active':''}" onclick="recordsPage=${i};applyRecordsFilters()">${i}</button>`;
+      p+='</div>'; $('recordsPagination').innerHTML=p;
     }
-    
-    function clearRecordsFilters(){ filterState.records={startDate:'',endDate:'',status:'all'}; $('recordsSearch').value=''; applyRecordsFilters(); toast(' Filters cleared'); }
-    
+    function clearRecordsFilters(){ filterState.records={startDate:'',endDate:'',status:'all'}; $('recordsSearch').value=''; applyRecordsFilters(); toast('Filters cleared'); }
     function exportRecordsCSV(){
       let mergedData = mergeAttendanceRecords(records);
       if(!mergedData.length) return toast('No records');
-      
-      let csv='Date,Name,Department,RFID UID,Clock In,Clock Out,Status\n';
-      mergedData.forEach(r=>{
-        csv+=`"${r.date||'--'}","${(r.name||'').replace(/"/g,'""')}","${(r.department||'').replace(/"/g,'""')}","${r.uid}","${r.clockIn||'--'}","${r.clockOut||'--'}","${r.status||'PENDING'}"\n`;
-      });
+      let csv='Date,Name,Department,Fingerprint ID,Clock In,Clock Out,Status\n';
+      mergedData.forEach(r=>{ csv+=`"${r.date||'--'}","${(r.name||'').replace(/"/g,'""')}","${(r.department||'').replace(/"/g,'""')}","${r.fingerprintId}","${r.clockIn||'--'}","${r.clockOut||'--'}","${r.status||'PENDING'}"\n`; });
       downloadCSV(csv,'sibao_attendance_history.csv');
     }
 
-    // SCHEDULE
     function applyScheduleFilters(){
       let data=[...schedule];
       const q=$('scheduleSearch').value.toLowerCase();
@@ -1685,26 +1650,22 @@
     function renderScheduleStats(data){
       const todayDay=getTodayDayName();
       let todayEntry=data.find(d=>d.day===todayDay);
-      if(!todayEntry && data.length) todayEntry=data[0];
+      if(!todayEntry&&data.length) todayEntry=data[0];
       const shiftStart=todayEntry?(todayEntry.clockIn==='NO SCHEDULE'?'--':todayEntry.clockIn):'--';
       const shiftEnd=todayEntry?(todayEntry.clockOut==='NO SCHEDULE'?'--':todayEntry.clockOut):'--';
       const grace=todayEntry?(todayEntry.clockIn==='NO SCHEDULE'?'--':todayEntry.latenessThreshold):'--';
-      $('scheduleStats').innerHTML=`<div class="stat-card"><div class="stat-label">Today's Status</div><div class="stat-value success">${shiftStart}</div></div><div class="stat-card"><div class="stat-label">End Time</div><div class="stat-value" style="color:var(--green);">${shiftEnd}</div></div><div class="stat-card"><div class="stat-label">Grace Period</div><div class="stat-value warning">${grace} ${grace!=='--'?'mins':''}</div></div><div class="stat-card"><div class="stat-label">Tracked Days</div><div class="stat-value">${data.length}</div></div>`;
+      $('scheduleStats').innerHTML=`<div class="stat-card"><div class="stat-label">Today</div><div class="stat-value success">${shiftStart}</div></div><div class="stat-card"><div class="stat-label">End</div><div class="stat-value" style="color:var(--green);">${shiftEnd}</div></div><div class="stat-card"><div class="stat-label">Grace</div><div class="stat-value warning">${grace}${grace!=='--'?'m':''}</div></div><div class="stat-card"><div class="stat-label">Days</div><div class="stat-value">${data.length}</div></div>`;
     }
     function renderScheduleGrid(data){
       const days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
       let html='';
       days.forEach(day=>{
         const item=data.find(d=>d.day===day);
-        const isAdd=!item;
-        const isNoSchedule=item && (item.clockIn==='NO SCHEDULE'||item.clockIn==='--'||!item.clockIn);
-        html+=`<div class="schedule-card"><div class="day-header"><span>${day}</span><button class="edit-schedule-btn ${isAdd?'add-btn':''}" onclick="openEditScheduleModal('${day}')"><i class="fas ${isAdd?'fa-plus':'fa-pencil-alt'}"></i></button></div>`;
-        if(item && !isNoSchedule){
-          html+=`<div class="schedule-item"><span class="label">Start</span><span class="value">${item.clockIn}</span></div>
-                 <div class="schedule-item"><span class="label">End</span><span class="value">${item.clockOut}</span></div>
-                 <div class="schedule-item"><span class="label">Grace</span><span class="value">${item.latenessThreshold} mins</span></div>`;
+        html+=`<div class="schedule-card"><div class="day-header"><span>${day}</span><button class="edit-schedule-btn" onclick="openEditScheduleModal('${day}')"><i class="fas fa-pencil-alt"></i></button></div>`;
+        if(item&&item.clockIn!=='NO SCHEDULE'&&item.clockIn!=='--'&&item.clockIn){
+          html+=`<div class="schedule-item"><span class="label">Start</span><span class="value">${item.clockIn}</span></div><div class="schedule-item"><span class="label">End</span><span class="value">${item.clockOut}</span></div><div class="schedule-item"><span class="label">Grace</span><span class="value">${item.latenessThreshold} mins</span></div>`;
         } else {
-          html+=`<div style="text-align:center;padding:14px 0;color:var(--text-muted);font-size:13px;font-style:italic;"><i class="fas fa-bed"></i> Off Day</div>`;
+          html+=`<div style="text-align:center;padding:14px 0;color:var(--text-muted);font-size:13px;"><i class="fas fa-bed"></i> Off Day</div>`;
         }
         html+=`</div>`;
       });
@@ -1713,185 +1674,151 @@
     function renderScheduleTable(data){
       if(!data.length){ $('scheduleTableData').innerHTML=''; return; }
       const todayDay=getTodayDayName();
-      let html=`<table><thead><tr><th>Weekdays</th><th>Clock In Time</th><th>Clock Out time</th><th>Lateness Grace</th></tr></thead><tbody>`;
+      let html=`<table><thead><tr><th>Day</th><th>Clock In</th><th>Clock Out</th><th>Grace</th></tr></thead><tbody>`;
       data.forEach(s=>{
-        const isToday=s.day===todayDay? 'class="today-highlight"':'';
-        html+=`<tr ${isToday}><td><strong>${s.day}</strong> ${s.day===todayDay?'<span class="badge badge-success">Today</span>':''}</td><td><span style="color:var(--green);font-weight:600;">${s.clockIn}</span></td><td><span style="color:var(--danger);font-weight:600;">${s.clockOut}</span></td><td><code>${s.latenessThreshold} minutes</code></td></tr>`;
+        const isToday=s.day===todayDay?'class="today-highlight"':'';
+        html+=`<tr ${isToday}><td><strong>${s.day}</strong>${s.day===todayDay?' <span class="badge badge-success">Today</span>':''}</td><td>${s.clockIn}</td><td>${s.clockOut}</td><td>${s.latenessThreshold}m</td></tr>`;
       });
       html+='</tbody></table>'; $('scheduleTableData').innerHTML=html;
     }
-
     function openEditScheduleModal(day){
       const item=schedule.find(d=>d.day===day);
-      const isOff = item && item.clockIn === 'NO SCHEDULE';
-      
-      const currentIn = item && item.clockIn && item.clockIn !== 'NO SCHEDULE' ? item.clockIn.split(':').slice(0, 2).join(':') : '07:00';
-      const currentOut = item && item.clockOut && item.clockOut !== 'NO SCHEDULE' ? item.clockOut.split(':').slice(0, 2).join(':') : '15:15';
-      const threshold = item ? (item.latenessThreshold || 0) : 40;
-
-      const content = $('editScheduleModalContent');
-      content.innerHTML = `
-        <div style="font-weight:700;margin-bottom:12px;color:var(--green); font-size:16px;"><i class="fas fa-calendar-day"></i> Setup Schedule for ${day}</div>
-        <div class="filter-group">
-          <label>Day Status</label>
-          <select id="editScheduleStatus">
-            <option value="active" ${!isOff?'selected':''}>Working Day (Shift Active)</option>
-            <option value="no_schedule" ${isOff?'selected':''}>Off Day (No logs captured)</option>
-          </select>
-        </div>
-        <div id="scheduleTimeGroup1" class="filter-group" style="display:${isOff?'none':'block'};">
-          <label>Clock-In Shift Start Time</label>
-          <input type="time" id="editClockIn" value="${currentIn}">
-        </div>
-        <div id="scheduleTimeGroup2" class="filter-group" style="display:${isOff?'none':'block'};">
-          <label>Clock-Out Shift End Time</label>
-          <input type="time" id="editClockOut" value="${currentOut}">
-        </div>
-        <div id="scheduleTimeGroup3" class="filter-group" style="display:${isOff?'none':'block'};">
-          <label>Lateness Threshold (Grace Period Minutes)</label>
-          <input type="number" id="editThreshold" placeholder="e.g. 40" value="${threshold}">
-        </div>
-        <div class="filter-actions">
-          <button class="btn" onclick="closeEditScheduleModal()">Cancel</button>
-          <button class="btn btn-primary" onclick="saveSchedule('${day}')">Save Settings</button>
-        </div>
-      `;
-
-      document.getElementById('editScheduleStatus').addEventListener('change', function(){
-        const isNo = this.value === 'no_schedule';
-        document.getElementById('scheduleTimeGroup1').style.display = isNo ? 'none' : 'block';
-        document.getElementById('scheduleTimeGroup2').style.display = isNo ? 'none' : 'block';
-        document.getElementById('scheduleTimeGroup3').style.display = isNo ? 'none' : 'block';
+      const isOff=item&&item.clockIn==='NO SCHEDULE';
+      const currentIn=item&&item.clockIn&&item.clockIn!=='NO SCHEDULE'?item.clockIn.split(':').slice(0,2).join(':'):'07:00';
+      const currentOut=item&&item.clockOut&&item.clockOut!=='NO SCHEDULE'?item.clockOut.split(':').slice(0,2).join(':'):'15:15';
+      const threshold=item?(item.latenessThreshold||0):40;
+      const content=$('editScheduleModalContent');
+      content.innerHTML=`<div style="font-weight:700;margin-bottom:12px;color:var(--green);">${day}</div>
+        <div class="filter-group"><label>Status</label><select id="editScheduleStatus"><option value="active" ${!isOff?'selected':''}>Working Day</option><option value="no_schedule" ${isOff?'selected':''}>Off Day</option></select></div>
+        <div id="stg1" class="filter-group" style="display:${isOff?'none':'block'};"><label>Clock In</label><input type="time" id="editClockIn" value="${currentIn}"></div>
+        <div id="stg2" class="filter-group" style="display:${isOff?'none':'block'};"><label>Clock Out</label><input type="time" id="editClockOut" value="${currentOut}"></div>
+        <div id="stg3" class="filter-group" style="display:${isOff?'none':'block'};"><label>Grace (mins)</label><input type="number" id="editThreshold" value="${threshold}"></div>
+        <div class="filter-actions"><button class="btn" onclick="closeEditScheduleModal()">Cancel</button><button class="btn btn-primary" onclick="saveSchedule('${day}')">Save</button></div>`;
+      document.getElementById('editScheduleStatus').addEventListener('change',function(){
+        const no=this.value==='no_schedule';
+        document.getElementById('stg1').style.display=no?'none':'block';
+        document.getElementById('stg2').style.display=no?'none':'block';
+        document.getElementById('stg3').style.display=no?'none':'block';
       });
-
       $('editScheduleModal').classList.add('show');
     }
-    
     function closeEditScheduleModal(){ $('editScheduleModal').classList.remove('show'); }
-    
     function saveSchedule(day){
       const status=document.getElementById('editScheduleStatus').value;
       if(status==='no_schedule'){
-        const obj={day, clockIn:'NO SCHEDULE', clockOut:'NO SCHEDULE', latenessThreshold:0};
+        const obj={day,clockIn:'NO SCHEDULE',clockOut:'NO SCHEDULE',latenessThreshold:0};
         showLoading(true);
         db.ref('schedule').orderByChild('day').equalTo(day).once('value').then(snap=>{
           const key=snap.val()?Object.keys(snap.val())[0]:null;
           if(key) return db.ref('schedule/'+key).update(obj);
           return db.ref('schedule').push(obj);
-        }).then(()=>{
-          closeEditScheduleModal(); showLoading(false); toast('Schedule set to OFF DAY');
-        }).catch(e=>{ showLoading(false); toast(e.message); });
+        }).then(()=>{ closeEditScheduleModal(); showLoading(false); toast('Off day set'); }).catch(e=>{ showLoading(false); toast('Error'); });
       } else {
         let clockIn=document.getElementById('editClockIn').value;
         let clockOut=document.getElementById('editClockOut').value;
         const threshold=parseInt(document.getElementById('editThreshold').value);
-        if(!clockIn||!clockOut||isNaN(threshold)) return toast('Please fill all fields');
-        
-        if (clockIn.split(':').length > 2) clockIn = clockIn.split(':').slice(0, 2).join(':');
-        if (clockOut.split(':').length > 2) clockOut = clockOut.split(':').slice(0, 2).join(':');
-
-        const obj={day, clockIn:clockIn+':00', clockOut:clockOut+':00', latenessThreshold:threshold};
+        if(!clockIn||!clockOut||isNaN(threshold)) return toast('Fill all fields');
+        if(clockIn.split(':').length>2) clockIn=clockIn.split(':').slice(0,2).join(':');
+        if(clockOut.split(':').length>2) clockOut=clockOut.split(':').slice(0,2).join(':');
+        const obj={day,clockIn:clockIn+':00',clockOut:clockOut+':00',latenessThreshold:threshold};
         showLoading(true);
         db.ref('schedule').orderByChild('day').equalTo(day).once('value').then(snap=>{
           const key=snap.val()?Object.keys(snap.val())[0]:null;
           if(key) return db.ref('schedule/'+key).update(obj);
           return db.ref('schedule').push(obj);
-        }).then(()=>{
-          closeEditScheduleModal(); showLoading(false); toast('Schedule saved successfully');
-        }).catch(e=>{ showLoading(false); toast(e.message); });
+        }).then(()=>{ closeEditScheduleModal(); showLoading(false); toast('Saved'); }).catch(e=>{ showLoading(false); toast('Error'); });
       }
     }
 
     let hooksLoaded=0;
-    function checkInitComplete() { hooksLoaded++; if(hooksLoaded>=4){ showLoading(false); } }
+    function checkInitComplete(){ hooksLoaded++; if(hooksLoaded>=4){ showLoading(false); } }
 
     function startLiveSync() {
       if (!mainApp.classList.contains('visible')) return;
-      
       showLoading(true);
-      $('topbarDateDisplay').textContent = getTodayDate();
-      $('todayDateDisplay').textContent = getTodayDate();
+      $('topbarDateDisplay').textContent=getTodayDate();
+      $('todayDateDisplay').textContent=getTodayDate();
+      
+      hooksLoaded = 0;
 
-      db.ref('teachers').on('value', snap=>{
-        users=[];
-        if(snap.val()) {
-          Object.entries(snap.val()).forEach(([key,val])=>{ users.push({key, ...val}); });
+      db.ref('teachers').on('value', snap => {
+        users = [];
+        if (snap.val()) {
+          Object.entries(snap.val()).forEach(([k, v]) => {
+            if (k !== '_init') users.push({ key: k, ...v });
+          });
         }
-        $('userBadge').textContent=users.length;
-        $('totalTeachersHome').textContent=users.length;
-        if(currentTab==='users') applyUserFilters();
-        updateHomeStats(); checkInitComplete();
-      }, ()=>{ users=[]; checkInitComplete(); });
+        $('userBadge').textContent = users.length;
+        $('totalTeachersHome').textContent = users.length;
+        if (currentTab === 'users') applyUserFilters();
+        updateHomeStats();
+        checkInitComplete();
+      }, () => { users = []; checkInitComplete(); });
 
-      db.ref('attendance').on('value', snap=>{
-        attendance=[];
-        if(snap.val()) {
+      db.ref('attendance').on('value', snap => {
+        attendance = [];
+        if (snap.val()) {
           const today = getTodayDate();
-          Object.values(snap.val()).forEach(a=>{
-            if(a.timestamp) {
-              const recordDate = a.timestamp.split(' ')[0];
-              if(recordDate === today) {
-                attendance.push(a);
-              }
+          Object.values(snap.val()).forEach(a => {
+            if (a.timestamp && a.timestamp.split(' ')[0] === today) {
+              attendance.push(a);
             }
           });
         }
-        let mergedData = mergeAttendanceRecords(attendance);
-        $('attendanceBadge').textContent = mergedData.length;
-        if(currentTab==='attendance') applyAttendanceFilters();
-        updateHomeStats(); checkInitComplete();
-      }, ()=>{ attendance=[]; checkInitComplete(); });
+        $('attendanceBadge').textContent = mergeAttendanceRecords(attendance).length;
+        if (currentTab === 'attendance') applyAttendanceFilters();
+        updateHomeStats();
+        checkInitComplete();
+      }, () => { attendance = []; checkInitComplete(); });
 
-      db.ref('attendance').on('value', snap=>{
-        records=[];
-        if(snap.val()) {
-          Object.values(snap.val()).forEach(r=>{ 
-            records.push(r); 
+      db.ref('attendance').on('value', snap => {
+        records = [];
+        if (snap.val()) {
+          Object.values(snap.val()).forEach(r => {
+            if (r.timestamp) records.push(r);
           });
         }
-        
-        let mergedRecords = mergeAttendanceRecords(records);
-        $('recordsBadge').textContent = mergedRecords.length;
-        
-        if(currentTab==='records') applyRecordsFilters();
-        updateHomeStats(); checkInitComplete();
-      }, ()=>{ records=[]; checkInitComplete(); });
+        $('recordsBadge').textContent = mergeAttendanceRecords(records).length;
+        if (currentTab === 'records') applyRecordsFilters();
+        updateHomeStats();
+        checkInitComplete();
+      }, () => { records = []; checkInitComplete(); });
 
-      db.ref('schedule').on('value', snap=>{
-        if(snap.val()){ 
-          schedule=Object.values(snap.val());
-          let configuredDays = schedule.filter(s => s.clockIn !== 'NO SCHEDULE' && s.clockIn !== '--' && s.clockIn);
-          $('scheduleBadge').textContent = configuredDays.length;
+      db.ref('schedule').on('value', snap => {
+        schedule = [];
+        if (snap.val()) {
+          Object.values(snap.val()).forEach(s => {
+            if (s.day) schedule.push(s);
+          });
         }
-        else {
-          schedule=[
-            {day:'Monday',clockIn:'07:00:00',clockOut:'15:15:00',latenessThreshold:40},
-            {day:'Tuesday',clockIn:'07:00:00',clockOut:'15:15:00',latenessThreshold:40},
-            {day:'Wednesday',clockIn:'07:00:00',clockOut:'15:15:00',latenessThreshold:40},
-            {day:'Thursday',clockIn:'07:00:00',clockOut:'15:15:00',latenessThreshold:40},
-            {day:'Friday',clockIn:'07:00:00',clockOut:'14:00:00',latenessThreshold:40}
-          ];
-          schedule.forEach(item=>db.ref('schedule').push(item));
-          $('scheduleBadge').textContent = schedule.length;
-        }
-        if(currentTab==='schedule') applyScheduleFilters();
-        updateHomeStats(); checkInitComplete();
-      }, ()=>{ schedule=[]; checkInitComplete(); });
+        $('scheduleBadge').textContent = schedule.filter(s => s.clockIn !== 'NO SCHEDULE' && s.clockIn && s.clockIn !== '--').length;
+        if (currentTab === 'schedule') applyScheduleFilters();
+        updateHomeStats();
+        checkInitComplete();
+      }, () => { schedule = []; checkInitComplete(); });
+
+      watchPendingFingerprints();
     }
 
-    function updateHomeStats(){
-      const mergedToday = mergeAttendanceRecords(attendance);
-      const present = mergedToday.filter(a=>a.clockIn !== '--').length;
-      const late = mergedToday.filter(a=>a.status==='LATE').length;
-      $('totalTodayHome').textContent = present;
-      $('totalLateHome').textContent = late;
-      let configuredDays = schedule.filter(s => s.clockIn !== 'NO SCHEDULE' && s.clockIn !== '--' && s.clockIn);
-      $('totalDaysHome').textContent = configuredDays.length;
+    function updateHomeStats() {
+      const merged = mergeAttendanceRecords(attendance);
+      $('totalTodayHome').textContent = merged.filter(a => a.clockIn !== '--').length;
+      $('totalLateHome').textContent = merged.filter(a => a.status === 'LATE').length;
+      $('totalDaysHome').textContent = schedule.filter(s => s.clockIn !== 'NO SCHEDULE' && s.clockIn && s.clockIn !== '--').length;
     }
 
-    function refreshData(){ toast('Syncing...'); hooksLoaded=0; startLiveSync(); }
+    function refreshData() {
+      toast('🔄 Syncing...');
+      hooksLoaded = 0;
+      db.ref('teachers').off();
+      db.ref('attendance').off();
+      db.ref('schedule').off();
+      db.ref('pending_fingerprints').off();
+      db.ref('pending_cards').off();
+      setTimeout(startLiveSync, 500);
+    }
 
-    // Make functions globally accessible
+    // Expose globally
     window.toggleSidebar = toggleSidebar;
     window.closeSidebar = closeSidebar;
     window.switchTab = switchTab;
@@ -1924,6 +1851,11 @@
     window.refreshData = refreshData;
     window.logout = logout;
     window.startLiveSync = startLiveSync;
+    window.autoFillFingerprintID = autoFillFingerprintID;
+    window.showPendingFingerprint = showPendingFingerprint;
+    window.clearPendingFingerprint = clearPendingFingerprint;
+    window.deletePendingFingerprint = deletePendingFingerprint;
+    window.initializeAllNodes = initializeAllNodes;
   </script>
 </body>
 </html>
