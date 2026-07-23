@@ -1231,6 +1231,48 @@
       return Object.values(merged);
     }
 
+    // ========== UPDATE ATTENDANCE RECORDS WHEN TEACHER IS EDITED ==========
+    function updateAttendanceRecordsForTeacher(fingerprintId, name, department, photo) {
+      return db.ref('attendance').once('value')
+        .then((snapshot) => {
+          const updates = {};
+          
+          if (snapshot.exists()) {
+            snapshot.forEach((childSnapshot) => {
+              const record = childSnapshot.val();
+              const recordKey = childSnapshot.key;
+              
+              // Check if this attendance record belongs to the edited teacher
+              if (record.fingerprintId === fingerprintId || 
+                  record.uid === fingerprintId) {
+                
+                // Update the record with new teacher info
+                updates[`attendance/${recordKey}/name`] = name;
+                updates[`attendance/${recordKey}/department`] = department;
+                
+                // Only update photo if a new one was provided
+                if (photo) {
+                  updates[`attendance/${recordKey}/photo`] = photo;
+                }
+              }
+            });
+          }
+          
+          // Perform all updates at once if there are any
+          if (Object.keys(updates).length > 0) {
+            console.log(`🔄 Updating ${Object.keys(updates).length} attendance records for teacher: ${name}`);
+            return db.ref().update(updates);
+          }
+          
+          console.log(`ℹ️ No attendance records found for teacher: ${name}`);
+          return Promise.resolve();
+        })
+        .catch((error) => {
+          console.error('❌ Error updating attendance records:', error);
+          throw error;
+        });
+    }
+
     let filterState = {
       users:{dept:'all',status:'all'},
       attendance:{status:'all'},
@@ -1506,14 +1548,47 @@
       else { $('editUserProfilePreview').style.display='none'; $('editUserProfilePlaceholder').style.display='flex'; $('removeEditPhotoBtn').style.display='none'; }
     }
     function closeEditUserModal(){ $('editUserModal').classList.remove('show'); }
+    
+    // ========== UPDATED UPDATE USER FUNCTION WITH ATTENDANCE SYNC ==========
     function updateUser(){
-      const key=$('editUserKey').value, name=$('editUserName').value.trim(), dept=$('editUserDept').value, email=$('editUserEmail').value.trim()||'N/A', status=$('editUserStatus').value, photo=$('editUserProfileUrl').value||null;
+      const key=$('editUserKey').value, 
+            name=$('editUserName').value.trim(), 
+            dept=$('editUserDept').value, 
+            email=$('editUserEmail').value.trim()||'N/A', 
+            status=$('editUserStatus').value, 
+            photo=$('editUserProfileUrl').value||null;
+      
       if(!name) return toast('Name is required');
+      
+      // Get the old teacher data first
+      const oldTeacher = users.find(t => t.key === key);
+      const oldFingerprintId = oldTeacher ? (oldTeacher.fingerprintId || oldTeacher.uid) : null;
+      
       showLoading(true);
-      db.ref('teachers/'+key).update({name,department:dept,email,status,profilePhoto:photo}).then(()=>{
-        closeEditUserModal(); showLoading(false); toast('Teacher updated');
-      }).catch(e=>{ showLoading(false); toast('❌ Error: '+e.message); });
+      
+      // Update teacher record
+      db.ref('teachers/'+key).update({
+        name, 
+        department:dept, 
+        email, 
+        status, 
+        profilePhoto:photo
+      }).then(() => {
+        // Now update all attendance records that use this teacher's fingerprint ID
+        if (oldFingerprintId) {
+          return updateAttendanceRecordsForTeacher(oldFingerprintId, name, dept, photo);
+        }
+        return Promise.resolve();
+      }).then(() => {
+        closeEditUserModal(); 
+        showLoading(false); 
+        toast('✅ Teacher updated - All records synced');
+      }).catch(e => { 
+        showLoading(false); 
+        toast('❌ Error: '+e.message); 
+      });
     }
+    
     function clearUserFilters(){ filterState.users={dept:'all',status:'all'}; $('userSearch').value=''; applyUserFilters(); toast('Filters reset'); }
     function openAddUserModal(){ if(users.length>=MAX_TEACHERS) return toast(` Maximum ${MAX_TEACHERS} teachers`); $('addUserModal').classList.add('show'); $('newUserName').value=''; $('newUserFingerprint').value=''; $('newUserEmail').value=''; $('newUserProfileUrl').value=''; $('newUserProfilePreview').style.display='none'; $('newUserProfilePlaceholder').style.display='flex'; $('removeNewPhotoBtn').style.display='none'; }
     function closeAddUserModal(){ $('addUserModal').classList.remove('show'); }
@@ -1552,7 +1627,6 @@
     function renderAttendanceStats(data){
       const present = data.filter(a=>a.clockIn !== '--').length;
       const late = data.filter(a=>a.status === 'LATE').length;
-      // EARLY + ON TIME combined
       const earlyOntime = data.filter(a=>a.status === 'EARLY' || a.status === 'ON TIME').length;
       const notYet = Math.max(0, users.length - present);
       $('attendanceStats').innerHTML=`
