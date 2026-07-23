@@ -717,6 +717,7 @@
   </style>
 </head>
 <body>
+  <!-- ===== LOGIN PAGE ===== -->
   <div class="login-page" id="loginPage">
     <div class="login-wrapper">
       <div class="login-card">
@@ -991,51 +992,24 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // ========== AUTO-CREATE ALL DATABASE NODES ==========
+    // ========== NO AUTO-CREATION - Everything manual ==========
     function initializeAllNodes() {
-      console.log('🔧 Initializing database structure...');
+      console.log('🔧 Checking database structure...');
+      console.log('📝 No automatic data creation - You create everything manually!');
       
-      // NO DEFAULT TEACHERS - Start empty!
-      const defaultSchedule = {
-        monday: { day: "Monday", clockIn: "07:00:00", clockOut: "15:15:00", latenessThreshold: 40 },
-        tuesday: { day: "Tuesday", clockIn: "07:00:00", clockOut: "15:15:00", latenessThreshold: 40 },
-        wednesday: { day: "Wednesday", clockIn: "07:00:00", clockOut: "15:15:00", latenessThreshold: 40 },
-        thursday: { day: "Thursday", clockIn: "07:00:00", clockOut: "15:15:00", latenessThreshold: 40 },
-        friday: { day: "Friday", clockIn: "07:00:00", clockOut: "14:00:00", latenessThreshold: 40 },
-        saturday: { day: "Saturday", clockIn: "NO SCHEDULE", clockOut: "NO SCHEDULE", latenessThreshold: 0 },
-        sunday: { day: "Sunday", clockIn: "NO SCHEDULE", clockOut: "NO SCHEDULE", latenessThreshold: 0 }
-      };
-
-      const defaultAdmins = {
-        admin1: { uid: "admin123", password: "password123", name: "Administrator", role: "admin", email: "admin@sibao.sch.ng" },
-        admin2: { uid: "principal", password: "principal2024", name: "School Principal", role: "superadmin", email: "principal@sibao.sch.ng" }
-      };
-
       const nodesToCheck = ['pending_fingerprints', 'teachers', 'attendance', 'schedule', 'admins', 'pending_cards', 'daily_attendance'];
       
       nodesToCheck.forEach(node => {
         db.ref(node).once('value')
           .then((snapshot) => {
             if (!snapshot.exists()) {
-              console.log(`📁 Creating ${node} node...`);
-              let data = {};
-              if (node === 'teachers') {
-                // Empty teachers node - NO DEFAULT TEACHERS
-                data = { _init: { created: new Date().toISOString(), note: "Add teachers manually or via fingerprint" } };
-              } else if (node === 'schedule') data = defaultSchedule;
-              else if (node === 'admins') data = defaultAdmins;
-              else if (node === 'daily_attendance') data = { _init: { created: new Date().toISOString() } };
-              else if (node === 'pending_fingerprints') data = { _init: { created: new Date().toISOString() } };
-              else if (node === 'pending_cards') data = { _init: { created: new Date().toISOString() } };
-              else if (node === 'attendance') data = { _init: { created: new Date().toISOString() } };
-              return db.ref(node).set(data);
+              console.log(`📁 ${node} node does NOT exist. You need to create it manually.`);
             } else {
-              console.log(`✅ ${node} node exists`);
+              console.log(`✅ ${node} node exists.`);
             }
-            return Promise.resolve();
           })
           .catch((error) => {
-            console.error(`❌ Error with ${node}:`, error);
+            console.error(`❌ Error checking ${node}:`, error);
           });
       });
     }
@@ -1047,6 +1021,26 @@
     const alertMsg = document.getElementById('alertMessage');
     const idInput = document.getElementById('loginId');
     const passInput = document.getElementById('loginPassword');
+
+    function createDefaultAdminIfNeeded() {
+      const defaultAdmin = {
+        uid: "admin123",
+        password: "password123",
+        name: "Administrator",
+        role: "admin",
+        email: "admin@sibao.sch.ng"
+      };
+      
+      db.ref('admins').orderByChild('uid').equalTo('admin123').once('value')
+        .then((snapshot) => {
+          if (!snapshot.exists()) {
+            console.log('📝 No admin found. Creating default admin for first login.');
+            console.log('⚠️ You should change this admin in Firebase Console after login.');
+            db.ref('admins').push(defaultAdmin);
+          }
+        })
+        .catch(() => {});
+    }
 
     function showAlert(msg, isSuccess = false) {
       alertMsg.textContent = msg;
@@ -1140,6 +1134,8 @@
         mainApp.classList.add('visible');
         initializeAllNodes();
         setTimeout(startLiveSync, 500);
+      } else {
+        createDefaultAdminIfNeeded();
       }
     });
 
@@ -1516,7 +1512,7 @@
       showLoading(true);
       db.ref('teachers/'+key).update({name,department:dept,email,status,profilePhoto:photo}).then(()=>{
         closeEditUserModal(); showLoading(false); toast('Teacher updated');
-      }).catch(e=>{ showLoading(false); toast(' Error: '+e.message); });
+      }).catch(e=>{ showLoading(false); toast('❌ Error: '+e.message); });
     }
     function clearUserFilters(){ filterState.users={dept:'all',status:'all'}; $('userSearch').value=''; applyUserFilters(); toast('Filters reset'); }
     function openAddUserModal(){ if(users.length>=MAX_TEACHERS) return toast(` Maximum ${MAX_TEACHERS} teachers`); $('addUserModal').classList.add('show'); $('newUserName').value=''; $('newUserFingerprint').value=''; $('newUserEmail').value=''; $('newUserProfileUrl').value=''; $('newUserProfilePreview').style.display='none'; $('newUserProfilePlaceholder').style.display='flex'; $('removeNewPhotoBtn').style.display='none'; }
@@ -1531,7 +1527,7 @@
         closeAddUserModal(); showLoading(false); toast(' Teacher added');
         if(fpId) deletePendingFingerprint(fpId);
         clearPendingFingerprint();
-      }).catch(e=>{ showLoading(false); toast('❌ Error: '+e.message); });
+      }).catch(e=>{ showLoading(false); toast(' Error: '+e.message); });
     }
     function removeUser(key){ if(!confirm('Delete this teacher?')) return; db.ref('teachers/'+key).remove().then(()=>toast('Teacher removed')).catch(e=>toast('❌ Error: '+e.message)); }
     function exportUsersCSV(){
@@ -1554,12 +1550,15 @@
       renderAttendanceStats(data); renderAttendanceTable(data);
     }
     function renderAttendanceStats(data){
-      const present = data.filter(a=>a.clockIn !== '--').length, late = data.filter(a=>a.status === 'LATE').length;
-      const early = data.filter(a=>a.status === 'EARLY').length, notYet = Math.max(0, users.length - present);
+      const present = data.filter(a=>a.clockIn !== '--').length;
+      const late = data.filter(a=>a.status === 'LATE').length;
+      // EARLY + ON TIME combined
+      const earlyOntime = data.filter(a=>a.status === 'EARLY' || a.status === 'ON TIME').length;
+      const notYet = Math.max(0, users.length - present);
       $('attendanceStats').innerHTML=`
         <div class="stat-card"><div class="stat-label">PRESENT TODAY</div><div class="stat-value success">${present}</div></div>
         <div class="stat-card"><div class="stat-label">LATE</div><div class="stat-value warning">${late}</div></div>
-        <div class="stat-card"><div class="stat-label">EARLY</div><div class="stat-value" style="color:var(--green);">${early}</div></div>
+        <div class="stat-card"><div class="stat-label" style="color:var(--green);">EARLY / ON TIME</div><div class="stat-value" style="color:var(--green);">${earlyOntime}</div></div>
         <div class="stat-card"><div class="stat-label">NOT YET IN</div><div class="stat-value danger">${notYet}</div></div>`;
     }
     function renderAttendanceTable(data){
@@ -1603,13 +1602,15 @@
       renderRecordsStats(data); renderRecordsTable(data);
     }
     function renderRecordsStats(data){
-      const total=data.length, late=data.filter(r=>r.status==='LATE').length;
-      const early=data.filter(r=>r.status==='EARLY').length, uniqueTeachers=new Set(data.map(r=>r.fingerprintId)).size;
+      const total=data.length;
+      const late=data.filter(r=>r.status==='LATE').length;
+      const earlyOntime=data.filter(r=>r.status==='EARLY' || r.status==='ON TIME').length;
+      const uniqueTeachers=new Set(data.map(r=>r.fingerprintId)).size;
       $('recordsStats').innerHTML=`
         <div class="stat-card"><div class="stat-label">TOTAL</div><div class="stat-value">${total}</div></div>
         <div class="stat-card"><div class="stat-label">LATE</div><div class="stat-value warning">${late}</div></div>
-        <div class="stat-card"><div class="stat-label">EARLY</div><div class="stat-value" style="color:var(--green);">${early}</div></div>
-        <div class="stat-card"><div class="stat-label">UNIQUE</div><div class="stat-value">${uniqueTeachers}</div></div>`;
+        <div class="stat-card"><div class="stat-label" style="color:var(--green);">EARLY / ON TIME</div><div class="stat-value" style="color:var(--green);">${earlyOntime}</div></div>
+        <div class="stat-card"><div class="stat-label">UNIQUE TEACHERS</div><div class="stat-value">${uniqueTeachers}</div></div>`;
     }
     function renderRecordsTable(data){
       const start=(recordsPage-1)*perPage, end=start+perPage, page=data.slice(start,end);
